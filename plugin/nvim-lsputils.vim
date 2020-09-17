@@ -12,4 +12,8 @@ if ! exists('lsputils_codeAction_enabled')
 	let g:lsputils_codeAction_enabled = 1
 endif
 
+if ! exists('lsputils_reference_enabled')
+	let g:lsputils_reference_enabled = 1
+endif
+
 lua require'lsputil'
