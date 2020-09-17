@@ -8,6 +8,8 @@ unlet s:save_cpo
 
 let g:loaded_lsputils = 1
 
-if ! exists('g:lsputils_codeAction_enabled')
+if ! exists('lsputils_codeAction_enabled')
 	let g:lsputils_codeAction_enabled = 1
 endif
+
+lua require'lsputil'
