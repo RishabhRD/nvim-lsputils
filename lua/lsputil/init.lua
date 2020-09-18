@@ -5,5 +5,25 @@ end
 
 if vim.g.lsputils_reference_enabled == 1 then
 	vim.lsp.callbacks['textDocument/references'] =
-	require'lsputil.references'.references_handler
+	require'lsputil.locations'.references_handler
+end
+
+if vim.g.lsputils_definition_enabled == 1 then
+	vim.lsp.callbacks['textDocument/definition'] =
+	require'lsputil.locations'.definition_handler
+end
+
+if vim.g.lsputils_declaration_enabled == 1 then
+	vim.lsp.callbacks['textDocument/declaration'] =
+	require'lsputil.locations'.declaration_handler
+end
+
+if vim.g.lsputils_typeDefinition_enabled == 1 then
+	vim.lsp.callbacks['textDocument/typeDefinition'] =
+	require'lsputil.locations'.typeDefinition_handler
+end
+
+if vim.g.lsputils_implementation_enabled == 1 then
+	vim.lsp.callbacks['textDocument/implementation'] =
+	require'lsputil.locations'.implementation_handler
 end

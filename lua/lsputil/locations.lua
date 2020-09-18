@@ -94,6 +94,50 @@ local function references_handler(_, _, locations)
 	temp_loc = nil
 end
 
+
+local definition_handler = function(_,_,locations)
+	if locations == nil or vim.tbl_isempty(locations) then
+		return
+	end
+	if vim.tbl_islist(locations) then
+		if #locations > 1 then
+			local data = {}
+			for i, location in pairs(locations) do
+				local uri = location.uri or location.targetUri
+				local range = location.range or location.targetSelectionRange
+				local filePath = uri:gsub('^file://', '')
+				--TODO path shortening
+				local curData = filePath .. ': '
+				local command = "sed '%sq;d' %s"
+				command = string.format(command, range.start.line + 1, filePath)
+				local appendedList = vim.fn.systemlist(command)
+				local appendedData = appendedList[1]
+				curData = curData .. appendedData
+				data[i] = curData
+			end
+			local key_maps = {
+				n = {
+					['<CR>'] = action.close_selected,
+					['<ESC>'] = action.close_cancelled,
+				}
+			}
+			temp_loc = locations[1]
+			local buf = require'popfix.preview'.popup_preview(data, key_maps,
+				init_handler, selection_handler, close_handler)
+			popup_buffer[buf] = locations
+			temp_loc = nil
+		else
+			vim.lsp.util.jump_to_location(locations[1])
+		end
+	else
+		vim.lsp.util.jump_to_location(locations)
+	end
+end
+
 return{
-	references_handler = references_handler
+	references_handler = references_handler,
+	definition_handler = definition_handler,
+	declaration_handler = definition_handler,
+	typeDefinition_handler = definition_handler,
+	implementation_handler = definition_handler
 }

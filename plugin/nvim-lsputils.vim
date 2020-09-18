@@ -16,4 +16,20 @@ if ! exists('lsputils_reference_enabled')
 	let g:lsputils_reference_enabled = 1
 endif
 
+if ! exists('lsputils_definition_enabled')
+	let g:lsputils_definition_enabled = 1
+endif
+
+if ! exists('lsputils_declaration_enabled')
+	let g:lsputils_declaration_enabled = 1
+endif
+
+if ! exists('lsputils_typeDefinition_enabled')
+	let g:lsputils_typeDefinition_enabled = 1
+endif
+
+if ! exists('lsputils_implementation_enabled')
+	let g:lsputils_implementation_enabled = 1
+endif
+
 lua require'lsputil'
