@@ -34,10 +34,10 @@ local code_action_handler = function(_,_,actions)
 		n = {
 			['<CR>'] = action.close_selected,
 			['<ESC>'] = action.close_cancelled,
-			['<C-n>'] = action.next_select,
-			['<C-p>'] = action.prev_select,
-			['<C-j>'] = action.next_select,
-			['<C-k>'] = action.prev_select,
+			['<C-n>'] = 'j',
+			['<C-p>'] = 'k',
+			['<C-j>'] = 'j',
+			['<C-k>'] = 'k'
 		}
 	}
 	local buf = require'popfix.popup'.popup_window(data, key_maps, nil, nil, popup_closed)
