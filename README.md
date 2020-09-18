@@ -15,11 +15,11 @@ friendly.
 
 ## Demo
 
-### After applying plugin:
+### Code Action:
 ![](https://user-images.githubusercontent.com/26287448/93617774-076ad600-f9f4-11ea-9c4e-d37019241320.gif)
 
 
-### After applying plugin:
+### References:
 ![](https://user-images.githubusercontent.com/26287448/93617977-4e58cb80-f9f4-11ea-9406-6e0ff0f2ec93.gif)
 
 ## Future goals
