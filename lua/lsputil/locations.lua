@@ -63,17 +63,21 @@ local function close_handler(buf, selected, line)
 	popup_buffer[buf] = nil
 end
 
-local function references_handler(_, _, locations)
+local function references_handler(_, _, locations,_,bufnr)
 	if locations == nil or vim.tbl_isempty(locations) then
 		return
 	end
 	local data = {}
+	local filename = vim.api.nvim_buf_get_name(bufnr)
 	for i, location in pairs(locations) do
 		local uri = location.uri or location.targetUri
 		local range = location.range or location.targetSelectionRange
 		local filePath = uri:gsub('^file://', '')
 		--TODO path shortening
-		local curData = filePath .. ': '
+		local curData = ''..(range.start.line + 1)..' '
+		if filename ~= filePath then
+			curData = curData..filePath .. ': '
+		end
 		local command = "sed '%sq;d' %s"
 		command = string.format(command, range.start.line + 1, filePath)
 		local appendedList = vim.fn.systemlist(command)
@@ -95,19 +99,23 @@ local function references_handler(_, _, locations)
 end
 
 
-local definition_handler = function(_,_,locations)
+local definition_handler = function(_,_,locations, _, bufnr)
 	if locations == nil or vim.tbl_isempty(locations) then
 		return
 	end
 	if vim.tbl_islist(locations) then
 		if #locations > 1 then
 			local data = {}
+			local filename = vim.api.nvim_buf_get_name(bufnr)
 			for i, location in pairs(locations) do
 				local uri = location.uri or location.targetUri
 				local range = location.range or location.targetSelectionRange
 				local filePath = uri:gsub('^file://', '')
 				--TODO path shortening
-				local curData = filePath .. ': '
+				local curData = ''..(range.start.line + 1)..' '
+				if filename ~= filePath then
+					curData = curData..filePath .. ': '
+				end
 				local command = "sed '%sq;d' %s"
 				command = string.format(command, range.start.line + 1, filePath)
 				local appendedList = vim.fn.systemlist(command)
