@@ -32,4 +32,12 @@ if ! exists('lsputils_implementation_enabled')
 	let g:lsputils_implementation_enabled = 1
 endif
 
+if ! exists('lsputils_doc_symbol_enabled')
+	let g:lsputils_doc_symbol_enabled = 1
+endif
+
+if ! exists('lsputils_workspace_symbol_enabled')
+	let g:lsputils_workspace_symbol_enabled = 1
+endif
+
 lua require'lsputil'
