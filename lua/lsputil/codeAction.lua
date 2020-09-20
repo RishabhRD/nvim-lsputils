@@ -1,3 +1,6 @@
+-- built upon popfix api(https://github.com/RishabhRD/popfix)
+-- for parameter references see popfix readme.
+
 local popup_buffer = {}
 
 -- close action handler for handling popup close(popfix api)

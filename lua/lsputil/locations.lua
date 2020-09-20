@@ -1,3 +1,6 @@
+-- built upon popfix api(https://github.com/RishabhRD/popfix)
+-- for parameter references see popfix readme.
+
 local action = require'popfix.action'
 
 -- TODO guaranteed to be accesed only by one reference operation by code

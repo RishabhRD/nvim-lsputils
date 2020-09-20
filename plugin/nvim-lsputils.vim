@@ -1,3 +1,6 @@
+" built upon popfix api(https://github.com/RishabhRD/popfix)
+" for parameter references see popfix readme.
+
 if exists('g:loaded_lsputils') | finish | endif
 
 let s:save_cpo = &cpo

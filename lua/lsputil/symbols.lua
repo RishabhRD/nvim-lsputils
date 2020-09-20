@@ -1,3 +1,6 @@
+-- built upon popfix api(https://github.com/RishabhRD/popfix)
+-- for parameter references see popfix readme.
+
 local action = require'popfix.action'
 
 -- buffer storage for each buffer during its popup is displayed
