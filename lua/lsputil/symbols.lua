@@ -1,10 +1,12 @@
 local action = require'popfix.action'
 
+-- buffer storage for each buffer during its popup is displayed
 local popup_buffer = {}
 
 -- Guranteed to be referenced one at a time
 local temp_item
 
+-- returns line range to display in preview
 local function range_result(start_line)
 	local line = start_line
 	local startLine = start_line
@@ -24,6 +26,8 @@ local function range_result(start_line)
 end
 
 
+-- retreives data form file using cat and sed
+-- (both because we want line numebrs)
 local function get_data_from_file(filePath, range_res)
 	local raw_command = "cat -n %s | sed -n '%s,%sp'"
 	local command = string.format(raw_command, filePath, range_res.startLine,
@@ -31,6 +35,10 @@ local function get_data_from_file(filePath, range_res)
 	return vim.fn.systemlist(command)
 end
 
+-- close handler
+-- jump to location according to index
+-- and result returned by server.
+-- Also cleans the data structure(memory mangement)
 local function close_handler(buf, selected, index)
 	local items = popup_buffer[buf]
 	if selected then
@@ -60,6 +68,9 @@ local function selection_handler(buf, index)
 	}
 end
 
+-- init hander
+-- returns data to preview first item
+-- according to data returned by server
 local function init_handler(_)
 	local item = temp_item
 	local range_res = range_result(item.lnum)
@@ -70,6 +81,8 @@ local function init_handler(_)
 	}
 end
 
+-- callback for lsp actions that returns symbols
+-- (for symbols see :h lsp)
 local function symbol_handler(_, _, result, _, bufnr)
 	if not result or vim.tbl_isempty(result) then return end
 	local filename = vim.api.nvim_buf_get_name(bufnr)

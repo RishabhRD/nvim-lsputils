@@ -1,5 +1,6 @@
 local popup_buffer = {}
 
+-- close action handler for handling popup close(popfix api)
 local popup_closed = function(buffer,selected,line)
 	if selected then
 		local actions = popup_buffer[buffer]
@@ -18,6 +19,7 @@ local popup_closed = function(buffer,selected,line)
 	popup_buffer[buffer] = nil
 end
 
+-- codeAction event callback handler
 local code_action_handler = function(_,_,actions)
 	if actions == nil or vim.tbl_isempty(actions) then
 		print("No code actions available")

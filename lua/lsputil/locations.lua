@@ -22,6 +22,9 @@ local function range_result(range)
 	}
 end
 
+-- selection handler
+-- returns new preview according to location return by server
+-- when selection is changed in popup
 local function selection_handler(buf, index)
 	local locations = popup_buffer[buf]
 	local location = locations[index]
@@ -39,6 +42,8 @@ local function selection_handler(buf, index)
 	}
 end
 
+-- init handler
+-- return preview for the first location return by server
 local function init_handler(_)
 	local location = temp_loc
 	local uri = location.uri or location.targetUri
@@ -55,6 +60,9 @@ local function init_handler(_)
 	}
 end
 
+-- close handler
+-- jump to location if line was selection otherwise do nothing
+-- Also cleans the data structure(memory mangement)
 local function close_handler(buf, selected, line)
 	local locations = popup_buffer[buf]
 	if selected then
