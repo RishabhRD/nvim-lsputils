@@ -20,7 +20,7 @@ friendly.
 
 
 ### References:
-![](https://user-images.githubusercontent.com/26287448/93617977-4e58cb80-f9f4-11ea-9406-6e0ff0f2ec93.gif)
+![](https://user-images.githubusercontent.com/26287448/93930985-d3691b00-fd3b-11ea-9053-b699e4d36558.gif)
 
 ## Future goals
 
