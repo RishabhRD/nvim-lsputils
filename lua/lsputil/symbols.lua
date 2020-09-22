@@ -43,7 +43,7 @@ end
 -- and result returned by server.
 -- Also cleans the data structure(memory mangement)
 local function close_handler(buf, selected, index)
-	local items = popup_buffer[buf]
+	local items = popup_buffer[buf].items
 	if selected then
 		local item = items[index]
 		local location = {
@@ -61,13 +61,14 @@ local function close_handler(buf, selected, index)
 end
 
 local function selection_handler(buf, index)
-	local items = popup_buffer[buf]
+	local items = popup_buffer[buf].items
 	local item = items[index]
 	local range_res = range_result(item.lnum)
 	local data = get_data_from_file(item.filename,range_res)
 	return {
 		data = data,
-		line = range_res.line - range_res.startLine
+		line = range_res.line - range_res.startLine,
+		filetype = popup_buffer[buf].filetype
 	}
 end
 
@@ -75,12 +76,13 @@ end
 -- returns data to preview first item
 -- according to data returned by server
 local function init_handler(_)
-	local item = temp_item
+	local item = temp_item.item
 	local range_res = range_result(item.lnum)
 	local data = get_data_from_file(item.filename,range_res)
 	return {
 		data = data,
-		line = range_res.line - range_res.startLine
+		line = range_res.line - range_res.startLine,
+		filetype = temp_item.filetype
 	}
 end
 
@@ -103,10 +105,17 @@ local function symbol_handler(_, _, result, _, bufnr)
 			['<ESC>'] = action.close_cancelled,
 		}
 	}
-	temp_item = items[1]
+	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
+	temp_item = {
+		item = items[1],
+		filetype = filetype
+	}
 	local buf = require'popfix.preview'.popup_preview(data, key_maps,
 		init_handler, selection_handler, close_handler)
-	popup_buffer[buf] = items
+	popup_buffer[buf] = {
+		items = items,
+		filetype = filetype
+	}
 	temp_item = nil
 end
 
