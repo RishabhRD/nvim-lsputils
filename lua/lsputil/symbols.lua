@@ -32,7 +32,7 @@ end
 -- retreives data form file using cat and sed
 -- (both because we want line numebrs)
 local function get_data_from_file(filePath, range_res)
-	local raw_command = "cat -n %s | sed -n '%s,%sp'"
+	local raw_command = "cat -n '%s' | sed -n '%s,%sp'"
 	local command = string.format(raw_command, filePath, range_res.startLine,
 		range_res.endLine)
 	return vim.fn.systemlist(command)

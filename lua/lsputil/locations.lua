@@ -35,7 +35,7 @@ local function selection_handler(buf, index)
 	local range = location.range or location.targetSelectionRange
 	local range_res = range_result(range)
 	local filePath = vim.uri_to_fname(uri)
-	local raw_command = "cat -n %s | sed -n '%s,%sp'"
+	local raw_command = "cat -n '%s' | sed -n '%s,%sp'"
 	local command = string.format(raw_command, filePath, range_res.startLine,
 		range_res.endLine)
 	local data = vim.fn.systemlist(command)
@@ -53,7 +53,7 @@ local function init_handler(_)
 	local range = location.range or location.targetSelectionRange
 	local range_res = range_result(range)
 	local filePath = vim.uri_to_fname(uri)
-	local raw_command = "cat -n %s | sed -n '%s,%sp'"
+	local raw_command = "cat -n '%s' | sed -n '%s,%sp'"
 	local command = string.format(raw_command, filePath, range_res.startLine,
 		range_res.endLine)
 	local data = vim.fn.systemlist(command)
@@ -89,7 +89,7 @@ local function references_handler(_, _, locations,_,bufnr)
 		if filename ~= filePath then
 			curData = curData..filePath .. ': '
 		end
-		local command = "sed '%sq;d' %s"
+		local command = "sed '%sq;d' '%s'"
 		command = string.format(command, range.start.line + 1, filePath)
 		local appendedList = vim.fn.systemlist(command)
 		local appendedData = appendedList[1]
@@ -127,7 +127,7 @@ local definition_handler = function(_,_,locations, _, bufnr)
 				if filename ~= filePath then
 					curData = curData..filePath .. ': '
 				end
-				local command = "sed '%sq;d' %s"
+				local command = "sed '%sq;d' '%s'"
 				command = string.format(command, range.start.line + 1, filePath)
 				local appendedList = vim.fn.systemlist(command)
 				local appendedData = appendedList[1]
