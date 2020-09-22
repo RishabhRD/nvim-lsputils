@@ -34,7 +34,7 @@ local function selection_handler(buf, index)
 	local uri = location.uri or location.targetUri
 	local range = location.range or location.targetSelectionRange
 	local range_res = range_result(range)
-	local filePath = uri:gsub('^file://', '')
+	local filePath = vim.uri_to_fname(uri)
 	local raw_command = "cat -n %s | sed -n '%s,%sp'"
 	local command = string.format(raw_command, filePath, range_res.startLine,
 		range_res.endLine)
@@ -52,7 +52,7 @@ local function init_handler(_)
 	local uri = location.uri or location.targetUri
 	local range = location.range or location.targetSelectionRange
 	local range_res = range_result(range)
-	local filePath = uri:gsub('^file://', '')
+	local filePath = vim.uri_to_fname(uri)
 	local raw_command = "cat -n %s | sed -n '%s,%sp'"
 	local command = string.format(raw_command, filePath, range_res.startLine,
 		range_res.endLine)
@@ -83,7 +83,7 @@ local function references_handler(_, _, locations,_,bufnr)
 	for i, location in pairs(locations) do
 		local uri = location.uri or location.targetUri
 		local range = location.range or location.targetSelectionRange
-		local filePath = uri:gsub('^file://', '')
+		local filePath = vim.uri_to_fname(uri)
 		--TODO path shortening
 		local curData = ''..(range.start.line + 1)..' '
 		if filename ~= filePath then
@@ -121,7 +121,7 @@ local definition_handler = function(_,_,locations, _, bufnr)
 			for i, location in pairs(locations) do
 				local uri = location.uri or location.targetUri
 				local range = location.range or location.targetSelectionRange
-				local filePath = uri:gsub('^file://', '')
+				local filePath = vim.uri_to_fname(uri)
 				--TODO path shortening
 				local curData = ''..(range.start.line + 1)..' '
 				if filename ~= filePath then
