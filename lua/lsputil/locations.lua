@@ -29,7 +29,7 @@ end
 -- returns new preview according to location return by server
 -- when selection is changed in popup
 local function selection_handler(buf, index)
-	local locations = popup_buffer[buf]
+	local locations = popup_buffer[buf].locations
 	local location = locations[index]
 	local uri = location.uri or location.targetUri
 	local range = location.range or location.targetSelectionRange
@@ -41,14 +41,15 @@ local function selection_handler(buf, index)
 	local data = vim.fn.systemlist(command)
 	return {
 		data = data,
-		line = range_res.line - range_res.startLine
+		line = range_res.line - range_res.startLine,
+		filetype = popup_buffer[buf].filetype
 	}
 end
 
 -- init handler
 -- return preview for the first location return by server
 local function init_handler(_)
-	local location = temp_loc
+	local location = temp_loc.location
 	local uri = location.uri or location.targetUri
 	local range = location.range or location.targetSelectionRange
 	local range_res = range_result(range)
@@ -59,7 +60,8 @@ local function init_handler(_)
 	local data = vim.fn.systemlist(command)
 	return {
 		data = data,
-		line = range_res.line - range_res.startLine
+		line = range_res.line - range_res.startLine,
+		filetype = temp_loc.filetype
 	}
 end
 
@@ -67,7 +69,7 @@ end
 -- jump to location if line was selection otherwise do nothing
 -- Also cleans the data structure(memory mangement)
 local function close_handler(buf, selected, line)
-	local locations = popup_buffer[buf]
+	local locations = popup_buffer[buf].locations
 	if selected then
 		vim.lsp.util.jump_to_location(locations[line])
 	end
@@ -102,10 +104,17 @@ local function references_handler(_, _, locations,_,bufnr)
 			['<ESC>'] = action.close_cancelled,
 		}
 	}
-	temp_loc = locations[1]
+	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+	temp_loc = {
+		location = locations[1],
+		filetype = filetype
+	}
 	local buf = require'popfix.preview'.popup_preview(data, key_maps,
 		init_handler, selection_handler, close_handler)
-	popup_buffer[buf] = locations
+	popup_buffer[buf] ={
+		locations = locations,
+		filetype = filetype
+	}
 	temp_loc = nil
 end
 
