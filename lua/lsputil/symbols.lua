@@ -2,6 +2,7 @@
 -- for parameter references see popfix readme.
 
 local action = require'popfix.action'
+local util = require'lsputil.util'
 
 -- buffer storage for each buffer during its popup is displayed
 local popup_buffer = {}
@@ -55,7 +56,7 @@ local function close_handler(buf, selected, index)
 				}
 			}
 		}
-		vim.lsp.util.jump_to_location(location)
+		util.jump_to_location(location, popup_buffer[buf].win)
 	end
 	popup_buffer[buf] = nil
 end
@@ -110,11 +111,13 @@ local function symbol_handler(_, _, result, _, bufnr)
 		item = items[1],
 		filetype = filetype
 	}
+	local win = vim.api.nvim_get_current_win()
 	local buf = require'popfix.preview'.popup_preview(data, key_maps,
 		init_handler, selection_handler, close_handler)
 	popup_buffer[buf] = {
 		items = items,
-		filetype = filetype
+		filetype = filetype,
+		win = win
 	}
 	temp_item = nil
 end
