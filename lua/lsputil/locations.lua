@@ -149,10 +149,17 @@ local definition_handler = function(_,_,locations, _, bufnr)
 					['<ESC>'] = action.close_cancelled,
 				}
 			}
-			temp_loc = locations[1]
+			local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+			temp_loc = {
+				location = locations[1],
+				filetype = filetype
+			}
 			local buf = require'popfix.preview'.popup_preview(data, key_maps,
 				init_handler, selection_handler, close_handler)
-			popup_buffer[buf] = locations
+			popup_buffer[buf] ={
+				locations = locations,
+				filetype = filetype
+			}
 			temp_loc = nil
 		else
 			vim.lsp.util.jump_to_location(locations[1])
