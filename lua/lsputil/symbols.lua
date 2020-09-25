@@ -10,6 +10,16 @@ local popup_buffer = {}
 -- Guranteed to be referenced one at a time
 local temp_item
 
+local key_maps = {
+	n = {
+		['<CR>'] = action.close_selected,
+		['<ESC>'] = action.close_cancelled,
+		['q'] = action.close_cancelled
+	},
+	i = {
+	}
+}
+
 -- returns line range to display in preview
 local function range_result(start_line)
 	local line = start_line
@@ -100,13 +110,6 @@ local function symbol_handler(_, _, result, _, bufnr)
 			data[i] = data[i]..' - '..item.filename
 		end
 	end
-	local key_maps = {
-		n = {
-			['<CR>'] = action.close_selected,
-			['<ESC>'] = action.close_cancelled,
-			['q'] = action.close_cancelled,
-		}
-	}
 	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
 	temp_item = {
 		item = items[1],
@@ -125,5 +128,6 @@ end
 
 return{
 	document_handler = symbol_handler,
-	workspace_handler = symbol_handler
+	workspace_handler = symbol_handler,
+	key_maps = key_maps
 }

@@ -9,6 +9,15 @@ local temp_loc
 
 local popup_buffer = {}
 
+local key_maps = {
+  n = {
+    ['<CR>'] = action.close_selected,
+    ['<ESC>'] = action.close_cancelled,
+    ['q'] = action.close_cancelled
+  },
+  i = {
+  }
+}
 
 local function range_result(range)
   local line = range.start.line + 1
@@ -101,13 +110,6 @@ local function references_handler(_, _, locations,_,bufnr)
     curData = curData .. appendedData
     data[i] = curData
   end
-  local key_maps = {
-    n = {
-      ['<CR>'] = action.close_selected,
-      ['<ESC>'] = action.close_cancelled,
-      ['q'] = action.close_cancelled,
-    }
-  }
   local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
   local win = vim.api.nvim_get_current_win();
   temp_loc = {
@@ -149,12 +151,6 @@ local definition_handler = function(_,_,locations, _, bufnr)
         curData = curData .. appendedData
         data[i] = curData
       end
-      local key_maps = {
-        n = {
-          ['<CR>'] = action.close_selected,
-          ['<ESC>'] = action.close_cancelled,
-        }
-      }
       local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
       temp_loc = {
         location = locations[1],
@@ -182,5 +178,6 @@ return{
   definition_handler = definition_handler,
   declaration_handler = definition_handler,
   typeDefinition_handler = definition_handler,
-  implementation_handler = definition_handler
+  implementation_handler = definition_handler,
+  key_maps = key_maps
 }
