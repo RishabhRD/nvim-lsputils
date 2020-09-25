@@ -104,6 +104,7 @@ local function symbol_handler(_, _, result, _, bufnr)
 		n = {
 			['<CR>'] = action.close_selected,
 			['<ESC>'] = action.close_cancelled,
+			['q'] = action.close_cancelled,
 		}
 	}
 	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
