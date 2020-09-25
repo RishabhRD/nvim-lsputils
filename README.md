@@ -54,3 +54,29 @@ Add following to init.vim lua chunk as:
 	vim.lsp.callbacks['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
 	vim.lsp.callbacks['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
 	EOF
+
+## Custom keymappings
+
+Lua API can be used to provide custom keymappings.
+
+	require'lsputil.locations'.key_maps
+	require'lsputil.symbols'.key_maps
+
+exposes keymaps for locations(i.e., references, definition, etc) and
+symbols (i.e., document symbols and workspace symbols).
+
+	local loc = require'lsputil.locations'
+	loc.key_maps['n']['\<leader\>as'] = .....(function or string)
+	loc.key_maps['i']['\<leader\>as> = .....(function or string)
+
+Here first and second line provides normal and insert mode mappings(to leader as) for
+lua function or other string for locations.
+
+	local loc = require'lsputil.symbols'
+	loc.key_maps['n']['\<leader\>as'] = .....(function or string)
+	loc.key_maps['i']['\<leader\>as'] = .....(function or string)
+
+Here first and second line provides normal and insert mode mappings(to leader as) for
+lua function or other string for symbols.
+
+See https://github.com/RishabhRD/popfix for more documentation of keymappings.
