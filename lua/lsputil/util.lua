@@ -1,5 +1,4 @@
 local function get_line_byte_from_position(bufnr, position)
-	print('hello')
 	-- LSP's line and characters are 0-indexed
 	-- Vim's line and columns are 1-indexed
 	local col = position.character
