@@ -20,33 +20,33 @@ local key_maps = {
 	}
 }
 
--- returns line range to display in preview
-local function range_result(start_line)
-	local line = start_line
-	local startLine = start_line
-	local endLine
-	if startLine <= 3 then
-		endLine  = 11 - startLine
-		startLine = 1
+
+-- retreives data form file
+-- and line to highlight
+local function get_data_from_file(filename,startLine)
+	local displayLine;
+	if startLine < 3 then
+		displayLine = startLine
+		startLine = 0
 	else
-		endLine = startLine + 7
 		startLine = startLine - 2
+		displayLine = 2
 	end
-	return {
-		line = line,
-		startLine = startLine,
-		endLine = endLine
+	local bufnr = vim.fn.bufadd(filename)
+	local data = vim.api.nvim_buf_get_lines(bufnr, startLine, startLine+8, false)
+	if data == nil or vim.tbl_isempty(data) then
+		startLine = nil
+	else
+		local len = #data
+		startLine = startLine+1
+		for i = 1, len, 1 do
+			data[i] = startLine..' '..data[i]
+		end
+	end
+	return{
+		data = data,
+		line = displayLine
 	}
-end
-
-
--- retreives data form file using cat and sed
--- (both because we want line numebrs)
-local function get_data_from_file(filePath, range_res)
-	local raw_command = "cat -n '%s' | sed -n '%s,%sp'"
-	local command = string.format(raw_command, filePath, range_res.startLine,
-		range_res.endLine)
-	return vim.fn.systemlist(command)
 end
 
 -- close handler
@@ -71,14 +71,16 @@ local function close_handler(buf, selected, index)
 	popup_buffer[buf] = nil
 end
 
+-- selection handler
+-- returns data to preview for index item
+-- according to data returned by server
 local function selection_handler(buf, index)
 	local items = popup_buffer[buf].items
 	local item = items[index]
-	local range_res = range_result(item.lnum)
-	local data = get_data_from_file(item.filename,range_res)
+	local data_line = get_data_from_file(item.filename,item.lnum - 1)
 	return {
-		data = data,
-		line = range_res.line - range_res.startLine,
+		data = data_line.data,
+		line = data_line.line,
 		filetype = popup_buffer[buf].filetype
 	}
 end
@@ -88,11 +90,10 @@ end
 -- according to data returned by server
 local function init_handler(_)
 	local item = temp_item.item
-	local range_res = range_result(item.lnum)
-	local data = get_data_from_file(item.filename,range_res)
+	local data_line = get_data_from_file(item.filename,item.lnum - 1)
 	return {
-		data = data,
-		line = range_res.line - range_res.startLine,
+		data = data_line.data,
+		line = data_line.line,
 		filetype = temp_item.filetype
 	}
 end

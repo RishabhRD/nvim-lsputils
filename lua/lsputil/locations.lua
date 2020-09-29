@@ -19,23 +19,37 @@ local key_maps = {
   }
 }
 
-local function range_result(range)
-  local line = range.start.line + 1
-  local startLine = range.start.line + 1
-  local endLine
-  if startLine <= 3 then
-    endLine  = 11 - startLine
-    startLine = 1
+local function get_data_from_loaction(location)
+  local uri = location.uri or location.targetUri
+  local range = location.range or location.targetSelectionRange
+  local startLine = range.start.line;
+  local displayLine;
+  if startLine < 3 then
+    displayLine = startLine
+    startLine = 0
   else
-    endLine = startLine + 7
     startLine = startLine - 2
+    displayLine = 2
   end
-  return {
-    line = line,
-    startLine = startLine,
-    endLine = endLine
+  local filename = vim.uri_to_fname(uri)
+  local bufnr = vim.fn.bufadd(filename)
+  local data = vim.api.nvim_buf_get_lines(bufnr, startLine, startLine+8, false)
+  if data == nil or vim.tbl_isempty(data) then
+    startLine = nil
+  else
+    local len = #data
+    startLine = startLine+1
+    for i = 1, len, 1 do
+      data[i] = startLine..' '..data[i]
+      startLine = startLine + 1
+    end
+  end
+  return{
+    data = data,
+    line = displayLine
   }
 end
+
 
 -- selection handler
 -- returns new preview according to location return by server
@@ -43,17 +57,10 @@ end
 local function selection_handler(buf, index)
   local locations = popup_buffer[buf].locations
   local location = locations[index]
-  local uri = location.uri or location.targetUri
-  local range = location.range or location.targetSelectionRange
-  local range_res = range_result(range)
-  local filePath = vim.uri_to_fname(uri)
-  local raw_command = "cat -n '%s' | sed -n '%s,%sp'"
-  local command = string.format(raw_command, filePath, range_res.startLine,
-    range_res.endLine)
-  local data = vim.fn.systemlist(command)
+  local data_line = get_data_from_loaction(location)
   return {
-    data = data,
-    line = range_res.line - range_res.startLine,
+    data = data_line.data,
+    line = data_line.line,
     filetype = popup_buffer[buf].filetype
   }
 end
@@ -62,17 +69,10 @@ end
 -- return preview for the first location return by server
 local function init_handler(_)
   local location = temp_loc.location
-  local uri = location.uri or location.targetUri
-  local range = location.range or location.targetSelectionRange
-  local range_res = range_result(range)
-  local filePath = vim.uri_to_fname(uri)
-  local raw_command = "cat -n '%s' | sed -n '%s,%sp'"
-  local command = string.format(raw_command, filePath, range_res.startLine,
-    range_res.endLine)
-  local data = vim.fn.systemlist(command)
+  local data_line = get_data_from_loaction(location)
   return {
-    data = data,
-    line = range_res.line - range_res.startLine,
+    data = data_line.data,
+    line = data_line.line,
     filetype = temp_loc.filetype
   }
 end
@@ -94,21 +94,12 @@ local function references_handler(_, _, locations,_,bufnr)
   end
   local data = {}
   local filename = vim.api.nvim_buf_get_name(bufnr)
-  for i, location in pairs(locations) do
-    local uri = location.uri or location.targetUri
-    local range = location.range or location.targetSelectionRange
-    local filePath = vim.uri_to_fname(uri)
-    --TODO path shortening
-    local curData = ''..(range.start.line + 1)..' '
-    if filename ~= filePath then
-      curData = curData..filePath .. ': '
+  local items = vim.lsp.util.locations_to_items(locations)
+  for i, item in pairs(items) do
+    data[i] = item.text
+    if filename ~= item.filename then
+      data[i] = data[i]..' - '..item.filename
     end
-    local command = "sed '%sq;d' '%s'"
-    command = string.format(command, range.start.line + 1, filePath)
-    local appendedList = vim.fn.systemlist(command)
-    local appendedData = appendedList[1]
-    curData = curData .. appendedData
-    data[i] = curData
   end
   local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
   local win = vim.api.nvim_get_current_win();
@@ -135,23 +126,14 @@ local definition_handler = function(_,_,locations, _, bufnr)
     if #locations > 1 then
       local data = {}
       local filename = vim.api.nvim_buf_get_name(bufnr)
-      for i, location in pairs(locations) do
-        local uri = location.uri or location.targetUri
-        local range = location.range or location.targetSelectionRange
-        local filePath = vim.uri_to_fname(uri)
-        --TODO path shortening
-        local curData = ''..(range.start.line + 1)..' '
-        if filename ~= filePath then
-          curData = curData..filePath .. ': '
-        end
-        local command = "sed '%sq;d' '%s'"
-        command = string.format(command, range.start.line + 1, filePath)
-        local appendedList = vim.fn.systemlist(command)
-        local appendedData = appendedList[1]
-        curData = curData .. appendedData
-        data[i] = curData
-      end
       local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
+      local items = vim.lsp.util.locations_to_items(locations)
+      for i, item in pairs(items) do
+        data[i] = item.text
+        if filename ~= item.filename then
+          data[i] = data[i]..' - '..item.filename
+        end
+      end
       temp_loc = {
         location = locations[1],
         filetype = filetype
