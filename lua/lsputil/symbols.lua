@@ -21,34 +21,6 @@ local key_maps = {
 }
 
 
--- retreives data form file
--- and line to highlight
-local function get_data_from_file(filename,startLine)
-	local displayLine;
-	if startLine < 3 then
-		displayLine = startLine
-		startLine = 0
-	else
-		startLine = startLine - 2
-		displayLine = 2
-	end
-	local bufnr = vim.fn.bufadd(filename)
-	local data = vim.api.nvim_buf_get_lines(bufnr, startLine, startLine+8, false)
-	if data == nil or vim.tbl_isempty(data) then
-		startLine = nil
-	else
-		local len = #data
-		startLine = startLine+1
-		for i = 1, len, 1 do
-			data[i] = startLine..' '..data[i]
-		end
-	end
-	return{
-		data = data,
-		line = displayLine
-	}
-end
-
 -- close handler
 -- jump to location according to index
 -- and result returned by server.
@@ -77,7 +49,7 @@ end
 local function selection_handler(buf, index)
 	local items = popup_buffer[buf].items
 	local item = items[index]
-	local data_line = get_data_from_file(item.filename,item.lnum - 1)
+	local data_line = util.get_data_from_file(item.filename,item.lnum - 1)
 	return {
 		data = data_line.data,
 		line = data_line.line,
@@ -90,7 +62,7 @@ end
 -- according to data returned by server
 local function init_handler(_)
 	local item = temp_item.item
-	local data_line = get_data_from_file(item.filename,item.lnum - 1)
+	local data_line = util.get_data_from_file(item.filename,item.lnum - 1)
 	return {
 		data = data_line.data,
 		line = data_line.line,
@@ -110,6 +82,7 @@ local function symbol_handler(_, _, result, _, bufnr)
 		if filename ~= item.filename then
 			data[i] = data[i]..' - '..item.filename
 		end
+		item.text = nil
 	end
 	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
 	temp_item = {

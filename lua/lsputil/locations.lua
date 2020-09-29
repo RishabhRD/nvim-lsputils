@@ -5,7 +5,7 @@ local action = require'popfix.action'
 local util = require'lsputil.util'
 
 -- TODO guaranteed to be accesed only by one reference operation by code
-local temp_loc
+local temp_item
 
 local popup_buffer = {}
 
@@ -19,45 +19,13 @@ local key_maps = {
   }
 }
 
-local function get_data_from_loaction(location)
-  local uri = location.uri or location.targetUri
-  local range = location.range or location.targetSelectionRange
-  local startLine = range.start.line;
-  local displayLine;
-  if startLine < 3 then
-    displayLine = startLine
-    startLine = 0
-  else
-    startLine = startLine - 2
-    displayLine = 2
-  end
-  local filename = vim.uri_to_fname(uri)
-  local bufnr = vim.fn.bufadd(filename)
-  local data = vim.api.nvim_buf_get_lines(bufnr, startLine, startLine+8, false)
-  if data == nil or vim.tbl_isempty(data) then
-    startLine = nil
-  else
-    local len = #data
-    startLine = startLine+1
-    for i = 1, len, 1 do
-      data[i] = startLine..' '..data[i]
-      startLine = startLine + 1
-    end
-  end
-  return{
-    data = data,
-    line = displayLine
-  }
-end
-
-
 -- selection handler
 -- returns new preview according to location return by server
 -- when selection is changed in popup
 local function selection_handler(buf, index)
-  local locations = popup_buffer[buf].locations
-  local location = locations[index]
-  local data_line = get_data_from_loaction(location)
+  local items = popup_buffer[buf].items
+  local item = items[index]
+  local data_line = util.get_data_from_file(item.filename,item.lnum - 1)
   return {
     data = data_line.data,
     line = data_line.line,
@@ -68,12 +36,12 @@ end
 -- init handler
 -- return preview for the first location return by server
 local function init_handler(_)
-  local location = temp_loc.location
-  local data_line = get_data_from_loaction(location)
+  local item = temp_item.item
+  local data_line = util.get_data_from_file(item.filename, item.lnum-1)
   return {
     data = data_line.data,
     line = data_line.line,
-    filetype = temp_loc.filetype
+    filetype = temp_item.filetype
   }
 end
 
@@ -81,9 +49,19 @@ end
 -- jump to location if line was selection otherwise do nothing
 -- Also cleans the data structure(memory mangement)
 local function close_handler(buf, selected, line)
-  local locations = popup_buffer[buf].locations
+  local items = popup_buffer[buf].items
   if selected then
-    util.jump_to_location(locations[line], popup_buffer[buf].win)
+    local item = items[line]
+    local location = {
+      uri = 'file://'..item.filename,
+      range = {
+        start = {
+          line = item.lnum - 1,
+          character = item.col - 1
+        }
+      }
+    }
+    util.jump_to_location(location, popup_buffer[buf].win)
   end
   popup_buffer[buf] = nil
 end
@@ -100,21 +78,22 @@ local function references_handler(_, _, locations,_,bufnr)
     if filename ~= item.filename then
       data[i] = data[i]..' - '..item.filename
     end
+    items.text = nil
   end
   local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype')
   local win = vim.api.nvim_get_current_win();
-  temp_loc = {
-    location = locations[1],
+  temp_item = {
+    item = items[1],
     filetype = filetype
   }
   local buf = require'popfix.preview'.popup_preview(data, key_maps,
     init_handler, selection_handler, close_handler)
   popup_buffer[buf] ={
-    locations = locations,
+    items = items,
     filetype = filetype,
     win = win
   }
-  temp_loc = nil
+  temp_item = nil
 end
 
 
@@ -133,20 +112,21 @@ local definition_handler = function(_,_,locations, _, bufnr)
         if filename ~= item.filename then
           data[i] = data[i]..' - '..item.filename
         end
+        item.text = nil
       end
-      temp_loc = {
-        location = locations[1],
+      temp_item = {
+        item = items[1],
         filetype = filetype
       }
       local win = vim.api.nvim_get_current_win()
       local buf = require'popfix.preview'.popup_preview(data, key_maps,
         init_handler, selection_handler, close_handler)
       popup_buffer[buf] ={
-        locations = locations,
+        items = items,
         filetype = filetype,
         win = win
       }
-      temp_loc = nil
+      temp_item = nil
     else
       vim.lsp.util.jump_to_location(locations[1])
     end

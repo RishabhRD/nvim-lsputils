@@ -38,6 +38,36 @@ local function jump_to_location(location, win)
 	return true
 end
 
+-- retreives data form file
+-- and line to highlight
+local function get_data_from_file(filename,startLine)
+	local displayLine;
+	if startLine < 3 then
+		displayLine = startLine
+		startLine = 0
+	else
+		startLine = startLine - 2
+		displayLine = 2
+	end
+	local bufnr = vim.fn.bufadd(filename)
+	local data = vim.api.nvim_buf_get_lines(bufnr, startLine, startLine+8, false)
+	if data == nil or vim.tbl_isempty(data) then
+		startLine = nil
+	else
+		local len = #data
+		startLine = startLine+1
+		for i = 1, len, 1 do
+			data[i] = startLine..' '..data[i]
+			startLine = startLine + 1
+		end
+	end
+	return{
+		data = data,
+		line = displayLine
+	}
+end
+
 return{
-	jump_to_location = jump_to_location
+	jump_to_location = jump_to_location,
+	get_data_from_file = get_data_from_file
 }
