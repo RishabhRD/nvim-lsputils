@@ -80,7 +80,9 @@ local function symbol_handler(_, _, result, _, bufnr)
 	for i, item in pairs(items) do
 		data[i] = item.text
 		if filename ~= item.filename then
-			data[i] = data[i]..' - '..item.filename
+			local cwd = vim.fn.getcwd(0)..'/'
+			local add = util.get_relative_path(cwd, item.filename)
+			data[i] = data[i]..' - '..add
 		end
 		item.text = nil
 	end
