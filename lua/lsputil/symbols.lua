@@ -1,32 +1,20 @@
 -- built upon popfix api(https://github.com/RishabhRD/popfix)
 -- for parameter references see popfix readme.
 
-local action = require'popfix.action'
 local util = require'lsputil.util'
+local popfix = require'popfix'
 
 -- buffer storage for each buffer during its popup is displayed
-local popup_buffer = {}
-
--- Guranteed to be referenced one at a time
-local temp_item
-
-local key_maps = {
-	n = {
-		['<CR>'] = action.close_selected,
-		['<ESC>'] = action.close_cancelled,
-		['q'] = action.close_cancelled
-	},
-	i = {
-	}
-}
-
+local items = {}
+local backupItems = {}
+local keymaps = nil
+local additionalKeymaps = nil
 
 -- close handler
 -- jump to location according to index
 -- and result returned by server.
 -- Also cleans the data structure(memory mangement)
-local function close_handler(buf, selected, index)
-	local items = popup_buffer[buf].items
+local function close_handler(index, _, selected)
 	if selected then
 		local item = items[index]
 		local location = {
@@ -38,35 +26,23 @@ local function close_handler(buf, selected, index)
 				}
 			}
 		}
-		util.jump_to_location(location, popup_buffer[buf].win)
+		vim.lsp.util.jump_to_location(location)
 	end
-	popup_buffer[buf] = nil
+	items = nil
 end
 
 -- selection handler
 -- returns data to preview for index item
 -- according to data returned by server
-local function selection_handler(buf, index)
-	local items = popup_buffer[buf].items
+local function selection_handler(index)
 	local item = items[index]
-	local data_line = util.get_data_from_file(item.filename,item.lnum - 1)
+	local startPoint = item.lnum - 3
+	if startPoint <= 0 then
+		startPoint = item.lnum
+	end
+	local cmd = string.format('bat %s --color=always --paging=always --plain -n --pager=\'less -RS\' -H %s -r %s:', item.filename, item.lnum, startPoint)
 	return {
-		data = data_line.data,
-		line = data_line.line,
-		filetype = popup_buffer[buf].filetype
-	}
-end
-
--- init hander
--- returns data to preview first item
--- according to data returned by server
-local function init_handler(_)
-	local item = temp_item.item
-	local data_line = util.get_data_from_file(item.filename,item.lnum - 1)
-	return {
-		data = data_line.data,
-		line = data_line.line,
-		filetype = temp_item.filetype
+		cmd = cmd
 	}
 end
 
@@ -75,7 +51,8 @@ end
 local function symbol_handler(_, _, result, _, bufnr)
 	if not result or vim.tbl_isempty(result) then return end
 	local filename = vim.api.nvim_buf_get_name(bufnr)
-	local items = vim.lsp.util.symbols_to_items(result, bufnr)
+	backupItems = items
+	items = vim.lsp.util.symbols_to_items(result, bufnr)
 	local data = {}
 	for i, item in pairs(items) do
 		data[i] = item.text
@@ -86,24 +63,37 @@ local function symbol_handler(_, _, result, _, bufnr)
 		end
 		item.text = nil
 	end
-	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
-	temp_item = {
-		item = items[1],
-		filetype = filetype
+	local opts = {
+		mode = 'split',
+		data = data,
+		height = 12,
+		keymaps = keymaps,
+		additional_keymaps = additionalKeymaps,
+		callbacks = {
+			select = selection_handler,
+			close = close_handler
+		},
+		list = {
+			numbering = true
+		},
+		preview = {
+			type = 'terminal',
+			border = true,
+		}
+
 	}
-	local win = vim.api.nvim_get_current_win()
-	local buf = require'popfix.preview'.popup_preview(data, key_maps,
-		init_handler, selection_handler, close_handler)
-	popup_buffer[buf] = {
-		items = items,
-		filetype = filetype,
-		win = win
-	}
-	temp_item = nil
+	local success = popfix.open(opts)
+	if success then
+		backupItems = nil
+	else
+		items = backupItems
+		backupItems = nil
+	end
 end
 
 return{
 	document_handler = symbol_handler,
 	workspace_handler = symbol_handler,
-	key_maps = key_maps
+	keymaps = keymaps,
+	additional_keymaps = additionalKeymaps
 }
