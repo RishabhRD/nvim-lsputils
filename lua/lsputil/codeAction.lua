@@ -42,7 +42,10 @@ local code_action_handler = function(_,_,actions)
 		mode = 'cursor',
 		list = {
 			numbering = true,
-			coloring = true
+			border = true,
+			-- TODO: I like borders for code_actions. Otherwise, it's hard for
+			-- to understand I entered to border mode.
+			-- coloring = true
 		},
 		callbacks = {
 			close = popup_closed
@@ -56,7 +59,7 @@ local code_action_handler = function(_,_,actions)
 			width = #str
 		end
 	end
-	opts.list.width = width + 5
+	opts.width = width + 5
 	opts.height = opts.height or #opts.data
 	local success = popfix.open(opts)
 	if success then
