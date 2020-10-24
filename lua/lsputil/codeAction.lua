@@ -50,6 +50,14 @@ local code_action_handler = function(_,_,actions)
 		keymaps = keymaps,
 		additional_keymaps = additionalKeymaps
 	}
+	local width = 0
+	for _, str in ipairs(opts.data) do
+		if #str > width then
+			width = #str
+		end
+	end
+	opts.list.width = width + 5
+	opts.height = opts.height or #opts.data
 	local success = popfix.open(opts)
 	if success then
 		backupActions = nil

@@ -79,6 +79,7 @@ local function references_handler(_, _, locations,_,bufnr)
 		preview = {
 			type = 'terminal',
 			border = true,
+			title = 'Preview',
 		}
 
 	}
