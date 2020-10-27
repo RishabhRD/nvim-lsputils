@@ -55,28 +55,97 @@ Add following to init.vim lua chunk as:
 	vim.lsp.callbacks['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
 	EOF
 
-## Custom keymappings
+## Custom Options
 
-Lua API can be used to provide custom keymappings.
+nvim-lsputils provides 3 global variables:
 
-	require'lsputil.locations'.key_maps
-	require'lsputil.symbols'.key_maps
+- lsp_utils_location_opts
+- lsp_utils_symbols_opts
+- lsp_utils_codeaction_opts
 
-exposes keymaps for locations(i.e., references, definition, etc) and
-symbols (i.e., document symbols and workspace symbols).
+These 3 variables are supposed to have vimscript dictionary values (Lua tables)
 
-	local loc = require'lsputil.locations'
-	loc.key_maps['n']['\<leader\>as'] = .....(function or string)
-	loc.key_maps['i']['\<leader\>as> = .....(function or string)
+lsp_utils_location_opts defines options for:
 
-Here first and second line provides normal and insert mode mappings(to leader as) for
-lua function or other string for locations.
+- definition handler
+- references handler
+- declaration handler
+- implementation handler
+- type_definition hander
 
-	local loc = require'lsputil.symbols'
-	loc.key_maps['n']['\<leader\>as'] = .....(function or string)
-	loc.key_maps['i']['\<leader\>as'] = .....(function or string)
+lsp_utils_symbols_opts defines options for:
 
-Here first and second line provides normal and insert mode mappings(to leader as) for
-lua function or other string for symbols.
+- workspace symbol handler
+- files symbols handler
 
-See https://github.com/RishabhRD/popfix for more documentation of keymappings.
+lsp_utils_codeaction_opts defines options for:
+
+- code_action handler
+
+lsp_utils_location_opts and lsp_utils_symbols_opts takes following key-value pairs:
+
+- height (integer) (Defines height of window)
+	if value is 0 then a suitable default height is provided. (Specially for
+		editor mode)
+- width (integer) (Defines width of window)
+- mode (string)
+	- split (for split previews (default))
+	- editor (for floating previews)
+- list (vimscript dictionary / Lua tables) Accepts following key/value pairs:
+	- border (boolean) (borders in floating mode)
+	- numbering (boolean) (vim window numbering active or not)
+	- title (boolean) (title for window)
+- preview (vimscript dictionary / Lua tables) Accepts following key/value pairs:
+	- border (boolean) (borders in floating mode)
+	- numbering (boolean) (vim window numbering active or not)
+	- title (boolean) (title for window)
+- keymaps (vimscript dictionary / Lua tables) Additional keymaps.
+	See https://github.com/RishabhRD/popfix to read about keymaps documentation.
+
+lsp_utils_codeaction_opts takes following key-value pairs:
+
+- height (integer) (Defines height of window)
+	if value is 0 then a suitable default height is provided. (Specially for
+		editor mode)
+- width (integer) (Defines width of window)
+- mode (string)
+	- split (for split previews (default))
+	- editor (for floating previews)
+- list (vimscript dictionary / Lua tables) Accepts following key/value pairs:
+	- border (boolean) (borders in floating mode)
+	- numbering (boolean) (vim window numbering active or not)
+	- title (boolean) (title for window)
+
+See https://github.com/RishabhRD/popfix for more documentation of options.
+
+These options helps to get better theme that suits your need.
+
+### Sample themeing with lua
+
+	vim.g.lsp_utils_location_opts = {
+		height = 24,
+		mode = 'editor',
+		preview = {
+			title = 'Location Preview'
+		},
+		keymaps = {
+			n = {
+				['<C-n>'] = 'j'
+				['<C-p>'] = 'k'
+			}
+		}
+	}
+	vim.g.lsp_utils_symbols_opts = {
+		height = 0,
+		mode = 'editor',
+		preview = {
+			title = 'Symbol Preview'
+		},
+		keymaps = {
+			n = {
+				['<C-n>'] = 'j'
+				['<C-p>'] = 'k'
+			}
+		}
+	}
+	vim.g.space_before_virtual_text = 5
