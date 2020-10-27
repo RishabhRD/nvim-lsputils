@@ -61,6 +61,28 @@ local code_action_handler = function(_,_,actions)
 	end
 	opts.width = width + 5
 	opts.height = opts.height or #opts.data
+	if vim.g.lsp_utils_codeaction_opts then
+		local tmp = vim.g.lsp_utils_codeaction_opts
+		opts.mode = tmp.mode or opts.mode
+		if tmp.height == 0 then
+			if opts.mode == 'editor' then
+				opts.height = nil
+			elseif opts.mode == 'split' then
+				opts.height = 12
+			end
+		end
+		opts.width = tmp.width
+		opts.additional_keymaps = tmp.keymaps or opts.additional_keymaps
+		if tmp.list then
+			if not tmp.list.numbering == nil then
+				opts.list.numbering = tmp.list.numbering
+			end
+			if not tmp.list.border == nil then
+				opts.list.border = tmp.list.border
+			end
+			opts.list.title = tmp.list.title or opts.list.title
+		end
+	end
 	local success = popfix.open(opts)
 	if success then
 		backupActions = nil

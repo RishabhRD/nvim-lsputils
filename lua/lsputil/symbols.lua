@@ -82,6 +82,38 @@ local function symbol_handler(_, _, result, _, bufnr)
 		}
 
 	}
+	if vim.g.lsp_utils_symbols_opts then
+		local tmp = vim.g.lsp_utils_symbols_opts
+		opts.mode = tmp.mode or opts.mode
+		opts.height = tmp.height or opts.height
+		if opts.height == 0 then
+			if opts.mode == 'editor' then
+				opts.height = nil
+			elseif opts.mode == 'split' then
+				opts.height = 12
+			end
+		end
+		opts.width = tmp.width
+		opts.additional_keymaps = tmp.keymaps or opts.additional_keymaps
+		if tmp.list then
+			if not tmp.list.numbering == nil then
+				opts.list.numbering = tmp.list.numbering
+			end
+			if not tmp.list.border == nil then
+				opts.list.border = tmp.list.border
+			end
+			opts.list.title = tmp.list.title or opts.list.title
+		end
+		if tmp.preview then
+			if not tmp.preview.numbering == nil then
+				opts.preview.numbering = tmp.preview.numbering
+			end
+			if not tmp.preview.border == nil then
+				opts.preview.border = tmp.preview.border
+			end
+			opts.preview.title = tmp.preview.title or opts.preview.title
+		end
+	end
 	local success = popfix.open(opts)
 	if success then
 		backupItems = nil
