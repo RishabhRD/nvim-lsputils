@@ -148,4 +148,3 @@ These options helps to get better theme that suits your need.
 			}
 		}
 	}
-	vim.g.space_before_virtual_text = 5
