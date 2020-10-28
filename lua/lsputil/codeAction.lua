@@ -74,10 +74,10 @@ local code_action_handler = function(_,_,actions)
 		opts.width = tmp.width
 		opts.additional_keymaps = tmp.keymaps or opts.additional_keymaps
 		if tmp.list then
-			if not tmp.list.numbering == nil then
+			if not (tmp.list.numbering == nil) then
 				opts.list.numbering = tmp.list.numbering
 			end
-			if not tmp.list.border == nil then
+			if not (tmp.list.border == nil) then
 				opts.list.border = tmp.list.border
 			end
 			opts.list.title = tmp.list.title or opts.list.title
