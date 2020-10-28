@@ -130,8 +130,8 @@ These options helps to get better theme that suits your need.
 		},
 		keymaps = {
 			n = {
-				['<C-n>'] = 'j'
-				['<C-p>'] = 'k'
+				['<C-n>'] = 'j',
+				['<C-p>'] = 'k',
 			}
 		}
 	}
@@ -143,8 +143,8 @@ These options helps to get better theme that suits your need.
 		},
 		keymaps = {
 			n = {
-				['<C-n>'] = 'j'
-				['<C-p>'] = 'k'
+				['<C-n>'] = 'j',
+				['<C-p>'] = 'k',
 			}
 		}
 	}
