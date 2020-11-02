@@ -167,14 +167,13 @@ These options helps to get better theme that suits your need.
 ### Sample themeing with lua
 
 	local border_chars = {
-		TOP_LEFT = '<',
-		TOP_RIGHT = '>',
-		BOTTOM_LEFT = '<',
-		BOTTOM_RIGHT = '>',
-		MID_HORIZONTAL = '-',
-		MID_VERTICAL = '',
+		TOP_LEFT = '┌',
+		TOP_RIGHT = '┐',
+		MID_HORIZONTAL = '─',
+		MID_VERTICAL = '│',
+		BOTTOM_LEFT = '└',
+		BOTTOM_RIGHT = '┘',
 	}
-
 	vim.g.lsp_utils_location_opts = {
 		height = 24,
 		mode = 'editor',
@@ -191,7 +190,7 @@ These options helps to get better theme that suits your need.
 		}
 	}
 	vim.g.lsp_utils_symbols_opts = {
-		height = 0,
+		height = 24,
 		mode = 'editor',
 		preview = {
 			title = 'Symbols Preview',
