@@ -166,11 +166,22 @@ These options helps to get better theme that suits your need.
 
 ### Sample themeing with lua
 
+	local border_chars = {
+		TOP_LEFT = '<',
+		TOP_RIGHT = '>',
+		BOTTOM_LEFT = '<',
+		BOTTOM_RIGHT = '>',
+		MID_HORIZONTAL = '-',
+		MID_VERTICAL = '',
+	}
+
 	vim.g.lsp_utils_location_opts = {
 		height = 24,
 		mode = 'editor',
 		preview = {
-			title = 'Location Preview'
+			title = 'Location Preview',
+			border = true,
+			border_chars = border_chars
 		},
 		keymaps = {
 			n = {
@@ -183,7 +194,9 @@ These options helps to get better theme that suits your need.
 		height = 0,
 		mode = 'editor',
 		preview = {
-			title = 'Symbol Preview'
+			title = 'Symbols Preview',
+			border = true,
+			border_chars = border_chars
 		},
 		keymaps = {
 			n = {
