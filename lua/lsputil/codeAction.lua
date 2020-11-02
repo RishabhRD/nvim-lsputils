@@ -81,6 +81,7 @@ local code_action_handler = function(_,_,actions)
 				opts.list.border = tmp.list.border
 			end
 			opts.list.title = tmp.list.title or opts.list.title
+			opts.list.border_chars = tmp.list.border_chars
 		end
 	end
 	local success = popfix.open(opts)

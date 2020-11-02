@@ -103,6 +103,7 @@ local function symbol_handler(_, _, result, _, bufnr)
 				opts.list.border = tmp.list.border
 			end
 			opts.list.title = tmp.list.title or opts.list.title
+			opts.list.border_chars = tmp.list.border_chars
 		end
 		if tmp.preview then
 			if not (tmp.preview.numbering == nil) then
@@ -112,6 +113,7 @@ local function symbol_handler(_, _, result, _, bufnr)
 				opts.preview.border = tmp.preview.border
 			end
 			opts.preview.title = tmp.preview.title or opts.preview.title
+			opts.preview.border_chars = tmp.preview.border_chars
 		end
 	end
 	local success = popfix.open(opts)

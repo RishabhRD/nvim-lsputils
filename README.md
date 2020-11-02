@@ -57,6 +57,9 @@ Add following to init.vim lua chunk as:
 
 ## Custom Options
 
+**NOTE: EACH attribute of custom opts is optional. If not provided, a suitable
+default is used in place of it.**
+
 nvim-lsputils provides 3 global variables:
 
 - lsp_utils_location_opts
@@ -95,10 +98,37 @@ lsp_utils_location_opts and lsp_utils_symbols_opts takes following key-value pai
 	- border (boolean) (borders in floating mode)
 	- numbering (boolean) (vim window numbering active or not)
 	- title (boolean) (title for window)
+	- border_chars (vimscript dictionary/ Lua table) (border characters for list)
+		Sample border_chars example:
+		```
+		border_chars = {
+			TOP_LEFT = '┌',
+			TOP_RIGHT = '┐',
+			MID_HORIZONTAL = '─',
+			MID_VERTICAL = '│',
+			BOTTOM_LEFT = '└',
+			BOTTOM_RIGHT = '┘',
+		}
+		```
+		If any of shown key of border_chars is missing then a space character
+		is used instead of it.
 - preview (vimscript dictionary / Lua tables) Accepts following key/value pairs:
 	- border (boolean) (borders in floating mode)
 	- numbering (boolean) (vim window numbering active or not)
 	- title (boolean) (title for window)
+	- border_chars (vimscript dictionary/ Lua table) (border characters for preview window)
+		Sample border_chars example:
+		```
+		border_chars = {
+			TOP_LEFT = '┌',
+			TOP_RIGHT = '┐',
+			MID_HORIZONTAL = '─',
+			MID_VERTICAL = '│',
+			BOTTOM_LEFT = '└',
+			BOTTOM_RIGHT = '┘',
+		}
+		If any of shown key of border_chars is missing then a space character
+		is used instead of it.
 - keymaps (vimscript dictionary / Lua tables) Additional keymaps.
 	See https://github.com/RishabhRD/popfix to read about keymaps documentation.
 
@@ -115,6 +145,20 @@ lsp_utils_codeaction_opts takes following key-value pairs:
 	- border (boolean) (borders in floating mode)
 	- numbering (boolean) (vim window numbering active or not)
 	- title (boolean) (title for window)
+	- border_chars (vimscript dictionary/ Lua table) (border characters for list)
+		Sample border_chars example:
+		```
+		border_chars = {
+			TOP_LEFT = '┌',
+			TOP_RIGHT = '┐',
+			MID_HORIZONTAL = '─',
+			MID_VERTICAL = '│',
+			BOTTOM_LEFT = '└',
+			BOTTOM_RIGHT = '┘',
+		}
+		```
+		If any of shown key of border_chars is missing then a space character
+		is used instead of it.
 
 See https://github.com/RishabhRD/popfix for more documentation of options.
 
