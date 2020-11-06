@@ -3,10 +3,10 @@
 
 local util = require'lsputil.util'
 local popfix = require'popfix'
+local resource = require'lsputil.popupResource'
 
 -- buffer storage for each buffer during its popup is displayed
 local items = {}
-local backupItems = {}
 local keymaps = nil
 local additionalKeymaps = nil
 
@@ -29,6 +29,7 @@ local function close_handler(index, _, selected)
 		vim.lsp.util.jump_to_location(location)
 	end
 	items = nil
+	resource.popup = nil
 end
 
 -- selection handler
@@ -49,9 +50,12 @@ end
 -- callback for lsp actions that returns symbols
 -- (for symbols see :h lsp)
 local function symbol_handler(_, _, result, _, bufnr)
+	if resource.popup then
+		print 'Busy in some other LSP popup'
+		return
+	end
 	if not result or vim.tbl_isempty(result) then return end
 	local filename = vim.api.nvim_buf_get_name(bufnr)
-	backupItems = items
 	items = vim.lsp.util.symbols_to_items(result, bufnr)
 	local data = {}
 	for i, item in pairs(items) do
@@ -116,12 +120,11 @@ local function symbol_handler(_, _, result, _, bufnr)
 			opts.preview.border_chars = tmp.preview.border_chars
 		end
 	end
-	local success = popfix.open(opts)
-	if success then
-		backupItems = nil
+	local popup = popfix:new(opts)
+	if popup then
+		resource.popup = popup
 	else
-		items = backupItems
-		backupItems = nil
+		items = nil
 	end
 end
 

@@ -1,11 +1,11 @@
 -- built upon popfix api(https://github.com/RishabhRD/popfix)
 -- for parameter references see popfix readme.
 
+local resource = require'lsputil.popupResource'
 local popfix = require'popfix'
 local util = require'lsputil.util'
 
 
-local backupItems = nil
 local items = nil
 local keymaps = nil
 local additionalKeymaps = nil
@@ -43,14 +43,17 @@ local function close_handler(index, _, selected)
 		vim.lsp.util.jump_to_location(location)
 	end
 	items = nil
-	backupItems = nil
+	resource.popup = nil
 end
 
 local function references_handler(_, _, locations,_,bufnr)
+	if resource.popup then
+		print 'Busy with some LSP popup'
+		return
+	end
 	if locations == nil or vim.tbl_isempty(locations) then
 		return
 	end
-	backupItems = items
 	local data = {}
 	local filename = vim.api.nvim_buf_get_name(bufnr)
 	items = vim.lsp.util.locations_to_items(locations)
@@ -117,12 +120,11 @@ local function references_handler(_, _, locations,_,bufnr)
 			opts.preview.border_chars = tmp.preview.border_chars
 		end
 	end
-	local success = popfix.open(opts)
-	if success then
-		backupItems = nil
+	local popup = popfix:new(opts)
+	if popup then
+		resource.popup = popup
 	else
-		items = backupItems
-		backupItems = nil
+		items = nil
 	end
 end
 
@@ -133,6 +135,10 @@ local definition_handler = function(_,_,locations, _, bufnr)
 	end
 	if vim.tbl_islist(locations) then
 		if #locations > 1 then
+			if resource.popup then
+				print 'Busy with some LSP popup'
+				return
+			end
 			local data = {}
 			local filename = vim.api.nvim_buf_get_name(bufnr)
 			items = vim.lsp.util.locations_to_items(locations)
@@ -197,12 +203,11 @@ local definition_handler = function(_,_,locations, _, bufnr)
 					opts.preview.border_chars = tmp.preview.border_chars
 				end
 			end
-			local success = popfix.open(opts)
-			if success then
-				backupItems = nil
+			local popup = popfix:new(opts)
+			if popup then
+				resource.popup = popup
 			else
-				items = backupItems
-				backupItems = nil
+				items = nil
 			end
 		else
 			vim.lsp.util.jump_to_location(locations[1])

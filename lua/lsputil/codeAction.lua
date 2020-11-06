@@ -1,6 +1,6 @@
 local actionBuffer = nil
-local backupActions = nil
 local popfix = require'popfix'
+local resource = require'lsputil.popupResource'
 
 local keymaps = nil
 local additionalKeymaps = nil
@@ -21,6 +21,7 @@ local popup_closed = function(index, _, selected)
 		end
 	end
 	actionBuffer = nil
+	resource.popup = nil
 end
 
 -- codeAction event callback handler
@@ -29,7 +30,10 @@ local code_action_handler = function(_,_,actions)
 		print("No code actions available")
 		return
 	end
-	backupActions = actionBuffer
+	if resource.popup then
+		print 'Busy in other LSP popup'
+		return
+	end
 	actionBuffer = actions
 	local data = {}
 	for i, action in ipairs(actions) do
@@ -84,12 +88,11 @@ local code_action_handler = function(_,_,actions)
 			opts.list.border_chars = tmp.list.border_chars
 		end
 	end
-	local success = popfix.open(opts)
-	if success then
-		backupActions = nil
+	local popup = popfix:new(opts)
+	if popup then
+		resource.popup = popup
 	else
-		actionBuffer = backupActions
-		backupActions = nil
+		actionBuffer = nil
 	end
 end
 
