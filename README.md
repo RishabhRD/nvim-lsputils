@@ -16,7 +16,7 @@ friendly.
 ## Demo
 
 ### Code Action:
-![](https://user-images.githubusercontent.com/26287448/93617774-076ad600-f9f4-11ea-9c4e-d37019241320.gif)
+![](https://user-images.githubusercontent.com/26287448/98861852-f7b7bd00-248b-11eb-8c11-fd37ab5d45d7.gif)
 
 
 ### References:
