@@ -6,6 +6,19 @@ may not seem user friendly for many users. But neovim LSP client is highly
 extensible with lua. This plugin focuses on making such LSP actions highly user
 friendly.
 
+## WARNING:
+Due to this pull request (https://github.com/neovim/neovim/pull/12655), the
+way to override default lsp behavior has changed and thus it is needed to use
+`vim.lsp.handlers` instead of `vim.lsp.callbacks`.
+
+Read the setup section for required changes required from user side.
+
+### Why not hide these details in plugin itself?
+It would be comfortable if these details are hidden in plugin itself. However,
+this limits the usecase of plugin and then it can't be used in the most
+flexible as it works currently.
+(For example: conditional loading of plugin with certain lsp-servers)
+
 ## Features
 
 - Floating popup for code actions
@@ -48,14 +61,14 @@ It can be installed with any plugin manager. For example with vim-plug:
 Add following to init.vim lua chunk as:
 
 	lua <<EOF
-	vim.lsp.callbacks['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
-	vim.lsp.callbacks['textDocument/references'] = require'lsputil.locations'.references_handler
-	vim.lsp.callbacks['textDocument/definition'] = require'lsputil.locations'.definition_handler
-	vim.lsp.callbacks['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
-	vim.lsp.callbacks['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
-	vim.lsp.callbacks['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
-	vim.lsp.callbacks['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
-	vim.lsp.callbacks['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
+	vim.lsp.handlers['textDocument/codeAction'] = require'lsputil.codeAction'.code_action_handler
+	vim.lsp.handlers['textDocument/references'] = require'lsputil.locations'.references_handler
+	vim.lsp.handlers['textDocument/definition'] = require'lsputil.locations'.definition_handler
+	vim.lsp.handlers['textDocument/declaration'] = require'lsputil.locations'.declaration_handler
+	vim.lsp.handlers['textDocument/typeDefinition'] = require'lsputil.locations'.typeDefinition_handler
+	vim.lsp.handlers['textDocument/implementation'] = require'lsputil.locations'.implementation_handler
+	vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
+	vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
 	EOF
 
 ## Custom Options
