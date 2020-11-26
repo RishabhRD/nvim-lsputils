@@ -15,6 +15,7 @@ local additionalKeymaps = nil
 -- and result returned by server.
 -- Also cleans the data structure(memory mangement)
 local function close_handler(index, _, selected)
+	resource.popup = nil
 	if selected then
 		local item = items[index]
 		local location = {
@@ -22,20 +23,23 @@ local function close_handler(index, _, selected)
 			range = {
 				start = {
 					line = item.lnum - 1,
-					character = item.col - 1
+					character = item.col
 				}
 			}
 		}
 		vim.lsp.util.jump_to_location(location)
+		if selected then
+			vim.cmd(':normal! zz')
+		end
 	end
 	items = nil
-	resource.popup = nil
 end
 
 -- selection handler
 -- returns data to preview for index item
 -- according to data returned by server
 local function selection_handler(index)
+	if index == nil then return end
 	local item = items[index]
 	local startPoint = item.lnum - 3
 	if startPoint <= 0 then
@@ -118,6 +122,18 @@ local function symbol_handler(_, _, result, _, bufnr)
 			end
 			opts.preview.title = tmp.preview.title or opts.preview.title
 			opts.preview.border_chars = tmp.preview.border_chars
+		end
+		if tmp.prompt then
+			opts.prompt = {
+				border_chars = tmp.prompt.border_chars,
+				coloring = tmp.prompt.coloring,
+				prompt_text = 'Symbols',
+				search_type = 'plain',
+				border = true
+			}
+			if tmp.prompt.border == false or tmp.prompt.border == true then
+				opts.prompt.border = tmp.prompt.border
+			end
 		end
 	end
 	local popup = popfix:new(opts)

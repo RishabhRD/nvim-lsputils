@@ -29,6 +29,7 @@ end
 -- jump to location if line was selection otherwise do nothing
 -- Also cleans the data structure(memory mangement)
 local function close_handler(index, _, selected)
+	resource.popup = nil
 	if selected then
 		local item = items[index]
 		local location = {
@@ -41,9 +42,11 @@ local function close_handler(index, _, selected)
 			}
 		}
 		vim.lsp.util.jump_to_location(location)
+		if selected then
+			vim.cmd('norm zz')
+		end
 	end
 	items = nil
-	resource.popup = nil
 end
 
 local function references_handler(_, _, locations,_,bufnr)
@@ -118,6 +121,18 @@ local function references_handler(_, _, locations,_,bufnr)
 			end
 			opts.preview.title = tmp.preview.title or opts.preview.title
 			opts.preview.border_chars = tmp.preview.border_chars
+		end
+		if tmp.prompt then
+			opts.prompt = {
+				border_chars = tmp.prompt.border_chars,
+				coloring = tmp.prompt.coloring,
+				prompt_text = 'Symbols',
+				search_type = 'plain',
+				border = true
+			}
+			if tmp.prompt.border == false or tmp.prompt.border == true then
+				opts.prompt.border = tmp.prompt.border
+			end
 		end
 	end
 	local popup = popfix:new(opts)
@@ -201,6 +216,18 @@ local definition_handler = function(_,_,locations, _, bufnr)
 					end
 					opts.preview.title = tmp.preview.title or opts.preview.title
 					opts.preview.border_chars = tmp.preview.border_chars
+				end
+				if tmp.prompt then
+					opts.prompt = {
+						border_chars = tmp.prompt.border_chars,
+						coloring = tmp.prompt.coloring,
+						prompt_text = 'Symbols',
+						search_type = 'plain',
+						border = true
+					}
+					if tmp.prompt.border == false or tmp.prompt.border == true then
+						opts.prompt.border = tmp.prompt.border
+					end
 				end
 			end
 			local popup = popfix:new(opts)

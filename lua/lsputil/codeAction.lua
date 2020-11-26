@@ -7,6 +7,7 @@ local additionalKeymaps = nil
 
 -- close action handler for handling popup close(popfix api)
 local popup_closed = function(index, _, selected)
+	resource.popup = nil
 	if selected then
 		local action = actionBuffer[index]
 		if action.edit or type(action.command) == "table" then
@@ -21,7 +22,6 @@ local popup_closed = function(index, _, selected)
 		end
 	end
 	actionBuffer = nil
-	resource.popup = nil
 end
 
 -- codeAction event callback handler
