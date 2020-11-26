@@ -14,6 +14,7 @@ local additionalKeymaps = nil
 -- returns new preview according to location return by server
 -- when selection is changed in popup
 local function selection_handler(index)
+	if index == nil then return end
 	local item = items[index]
 	local startPoint = item.lnum - 3
 	if startPoint <= 0 then
@@ -29,6 +30,7 @@ end
 -- jump to location if line was selection otherwise do nothing
 -- Also cleans the data structure(memory mangement)
 local function close_handler(index, _, selected)
+	if index == nil then return end
 	resource.popup = nil
 	if selected then
 		local item = items[index]

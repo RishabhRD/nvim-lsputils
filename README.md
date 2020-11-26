@@ -25,6 +25,7 @@ flexible as it works currently.
 - Preview window for references
 - Preview window for definition, declaration, type-definition, implementation
 - Preview window for document symbol and workspace symbol
+- Fuzzy finding of symbols [optional]
 
 ## Demo
 
@@ -41,7 +42,11 @@ flexible as it works currently.
 ## Future goals
 
 - LspSearch command to search symbol over workspace and list it in a window.
-- Fuzzy finding of symbols
+
+** Fuzzy finding of symbols is optional for the time being. This is because
+fuzzy engine of popfix is still in developement. However, it usually it doesn't
+crash and work as expected. For using it read custom options section. 
+For the code snippet read sample theming section. **
 
 ## Prerequisite
 
@@ -131,7 +136,7 @@ lsp_utils_location_opts and lsp_utils_symbols_opts takes following key-value pai
 - preview (vimscript dictionary / Lua tables) Accepts following key/value pairs:
 	- border (boolean) (borders in floating mode)
 	- numbering (boolean) (vim window numbering active or not)
-	- title (boolean) (title for window)
+	- title (string) (title for window)
 	- border_chars (vimscript dictionary/ Lua table) (border characters for preview window)
 		Sample border_chars example:
 		```
@@ -160,7 +165,24 @@ lsp_utils_codeaction_opts takes following key-value pairs:
 - list (vimscript dictionary / Lua tables) Accepts following key/value pairs:
 	- border (boolean) (borders in floating mode)
 	- numbering (boolean) (vim window numbering active or not)
-	- title (boolean) (title for window)
+	- title (string) (title for window)
+	- border_chars (vimscript dictionary/ Lua table) (border characters for list)
+		Sample border_chars example:
+		```
+		border_chars = {
+			TOP_LEFT = '┌',
+			TOP_RIGHT = '┐',
+			MID_HORIZONTAL = '─',
+			MID_VERTICAL = '│',
+			BOTTOM_LEFT = '└',
+			BOTTOM_RIGHT = '┘',
+		}
+		```
+		If any of shown key of border_chars is missing then a space character
+		is used instead of it.
+- prompt (table) (optional and may break)
+	- border (boolean) (borders in floating mode)
+	- numbering (boolean) (vim window numbering active or not)
 	- border_chars (vimscript dictionary/ Lua table) (border characters for list)
 		Sample border_chars example:
 		```
@@ -213,10 +235,7 @@ These options helps to get better theme that suits your need.
 			border = true,
 			border_chars = border_chars
 		},
-		keymaps = {
-			n = {
-				['<C-n>'] = 'j',
-				['<C-p>'] = 'k',
-			}
-		}
+		prompt = {},
 	}
+
+** Symbols would have fuzzy find features with these configuration **
