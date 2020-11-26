@@ -36,8 +36,12 @@ flexible as it works currently.
 ### References:
 ![](https://user-images.githubusercontent.com/26287448/98860407-9ee72500-2489-11eb-8b61-4ca7cb3f78ee.gif)
 
+### Fuzzy search:
+![](https://user-images.githubusercontent.com/26287448/100377758-de8c4000-3037-11eb-9969-c4edfc9b5479.gif)
+
 ### Custom theming (See below for more details)
 ![](https://user-images.githubusercontent.com/26287448/98858320-6abe3500-2486-11eb-8795-a8d1bb8dbecc.gif)
+
 
 ## Future goals
 
