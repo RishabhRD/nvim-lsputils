@@ -15,6 +15,7 @@ local additionalKeymaps = nil
 -- and result returned by server.
 -- Also cleans the data structure(memory mangement)
 local function close_handler(index, _, selected)
+	if index == nil then return end
 	resource.popup = nil
 	if selected then
 		local item = items[index]
