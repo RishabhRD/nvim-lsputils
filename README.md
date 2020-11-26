@@ -47,10 +47,10 @@ flexible as it works currently.
 
 - LspSearch command to search symbol over workspace and list it in a window.
 
-** Fuzzy finding of symbols is optional for the time being. This is because
+**Fuzzy finding of symbols is optional for the time being. This is because
 fuzzy engine of popfix is still in developement. However, it usually it doesn't
 crash and work as expected. For using it read custom options section. 
-For the code snippet read sample theming section. **
+For the code snippet read sample theming section.**
 
 ## Prerequisite
 
@@ -242,4 +242,4 @@ These options helps to get better theme that suits your need.
 		prompt = {},
 	}
 
-** Symbols would have fuzzy find features with these configuration **
+**Symbols would have fuzzy find features with these configuration**
