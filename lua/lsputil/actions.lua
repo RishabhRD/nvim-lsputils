@@ -2,13 +2,13 @@ local M = {}
 local api = vim.api
 -- close handler
 -- jump to location in a new vertical split
--- according to index and result returned by server.  
+-- according to index and result returned by server.
 -- Also cleans the data structure(memory mangement)
 function M.close_selected_handler(index, command)
 	M.popup = nil
-	if index == nil then 
+	if index == nil then
 		M.items = nil
-		return 
+		return
 	end
 	local item = M.items[index]
 	local location = {
@@ -52,13 +52,13 @@ function M.selection_handler(index)
 end
 
 
-function M.close_cancelled_handler(index, line)
+function M.close_cancelled_handler()
 	M.popup = nil
 	M.items = nil
 end
 
 function M.close_cancelled(self)
-	self:close(close_cancelled_handler)
+	self:close(M.close_cancelled_handler)
 end
 
 function M.select_next(self)
@@ -100,9 +100,9 @@ end
 -- for codeactions
 function M.codeaction_selection_handler(index)
 	M.popup = nil
-	if index == nil then 
+	if index == nil then
 		M.actionBuffer = nil
-		return 
+		return
 	end
 	local action = M.actionBuffer[index]
 	if action.edit or type(action.command) == "table" then
@@ -128,7 +128,7 @@ function M.codeaction_fix(self)
 end
 
 function M.codeaction_cancel(self)
-	self:close(M.close_cancelled_handler)
+	self:close(M.codeaction_cancel_handler)
 end
 
 function M.codeaction_next(self)

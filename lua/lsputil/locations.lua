@@ -106,7 +106,7 @@ local definition_handler = function(_,_,locations, _, bufnr)
 			end
 			opts.data = data
 			action.popup = popfix:new(opts)
-			if action.popup then
+			if not action.popup then
 				action.items = nil
 			end
 			opts.data = nil
