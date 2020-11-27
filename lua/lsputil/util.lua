@@ -107,7 +107,7 @@ local function handleGlobalVariable(var, opts)
 		opts.list.title = var.list.title or opts.list.title
 		opts.list.border_chars = var.list.border_chars
 	end
-	if var.preview then
+	if var.preview and opts.preview then
 		if not (var.preview.numbering == nil) then
 			opts.preview.numbering = var.preview.numbering
 		end

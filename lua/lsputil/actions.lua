@@ -96,5 +96,42 @@ function M.close_edit(self)
 	self:close(M.close_selected_handler)
 end
 
+-- for codeactions
+function M.codeacton_selection_handler(index)
+	resource.popup = nil
+	local action = M.actionBuffer[index]
+	if action.edit or type(action.command) == "table" then
+		if action.edit then
+			vim.lsp.util.apply_workspace_edit(action.edit)
+		end
+		if type(action.command) == "table" then
+			vim.lsp.buf.execute_command(action.command)
+		end
+	else
+		vim.lsp.buf.execute_command(action)
+	end
+	M.actionBuffer = nil
+end
+
+function M.codeaction_cancel_handler()
+	resource.popup = nil
+	M.actionBuffer = nil
+end
+
+function M.codeaction_fix(self)
+	self:close(M.codeacton_selection_handler)
+end
+
+function M.codeaction_cancel(self)
+	self:close(M.close_cancelled_handler)
+end
+
+function M.codeaction_next(self)
+	self:select_next()
+end
+
+function M.codeaction_prev(self)
+	self:select_prev()
+end
 
 return M
