@@ -47,9 +47,6 @@ local code_action_handler = function(_,_,actions)
 		list = {
 			numbering = true,
 			border = true,
-			-- TODO: I like borders for code_actions. Otherwise, it's hard for
-			-- to understand I entered to border mode.
-			-- coloring = true
 		},
 		callbacks = {
 			close = popup_closed

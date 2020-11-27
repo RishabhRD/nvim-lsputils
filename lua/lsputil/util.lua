@@ -84,9 +84,57 @@ local function get_relative_path(base_path, my_path)
 	return data
 end
 
+local function handleGlobalVariable(var, opts)
+	if var == nil then return end
+	opts.mode = var.mode or opts.mode
+	opts.height = var.height or opts.height
+	if opts.height == 0 then
+		if opts.mode == 'editor' then
+			opts.height = nil
+		elseif opts.mode == 'split' then
+			opts.height = 12
+		end
+	end
+	opts.width = var.width
+	opts.keymaps = var.keymaps or opts.keymaps
+	if var.list then
+		if not (var.list.numbering == nil) then
+			opts.list.numbering = var.list.numbering
+		end
+		if not (var.list.border == nil) then
+			opts.list.border = var.list.border
+		end
+		opts.list.title = var.list.title or opts.list.title
+		opts.list.border_chars = var.list.border_chars
+	end
+	if var.preview then
+		if not (var.preview.numbering == nil) then
+			opts.preview.numbering = var.preview.numbering
+		end
+		if not (var.preview.border == nil) then
+			opts.preview.border = var.preview.border
+		end
+		opts.preview.title = var.preview.title or opts.preview.title
+		opts.preview.border_chars = var.preview.border_chars
+	end
+	if var.prompt then
+		opts.prompt = {
+			border_chars = var.prompt.border_chars,
+			coloring = var.prompt.coloring,
+			prompt_text = 'Symbols',
+			search_type = 'plain',
+			border = true
+		}
+		if var.prompt.border == false or var.prompt.border == true then
+			opts.prompt.border = var.prompt.border
+		end
+	end
+end
+
 
 return{
 	get_data_from_file = get_data_from_file,
-	get_relative_path = get_relative_path
+	get_relative_path = get_relative_path,
+	handleGlobalVariable = handleGlobalVariable,
 }
 
