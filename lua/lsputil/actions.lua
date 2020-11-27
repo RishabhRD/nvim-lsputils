@@ -1,51 +1,37 @@
 local M = {}
+local api = vim.api
 -- close handler
 -- jump to location in a new vertical split
 -- according to index and result returned by server.  
 -- Also cleans the data structure(memory mangement)
-function M.close_vertical_handler(index)
-	if index == nil then return end
+function M.close_selected_handler(index, command)
 	M.popup = nil
-	if selected then
-		local item = M.items[index]
-		local location = {
-			uri = 'file://'..item.filename,
-			range = {
-				start = {
-					line = item.lnum - 1,
-					--TODO: robust character column
-					character = item.col
-				}
+	if index == nil then 
+		M.items = nil
+		return 
+	end
+	local item = M.items[index]
+	local location = {
+		uri = 'file://'..item.filename,
+		range = {
+			start = {
+				line = item.lnum - 1,
+				--TODO: robust character column
+				character = item.col
 			}
 		}
+	}
+	if command == nil then
+	elseif command == 'vsp' then
 		vim.cmd('vsp')
-		vim.lsp.util.jump_to_location(location)
-		vim.cmd(':normal! zz')
+	elseif command == 'sp' then
+		vim.cmd('sp')
+	elseif command == 'tab' then
+		local buffer = api.nvim_get_current_buf()
+        vim.cmd(string.format(":tab sb %d", buffer))
 	end
-	M.items = nil
-end
-
--- close handler
--- jump to location according to index
--- and result returned by server.
--- Also cleans the data structure(memory mangement)
-function M.close_handler(index, _, selected)
-	if index == nil then return end
-	M.popup = nil
-	if selected then
-		local item = M.items[index]
-		local location = {
-			uri = 'file://'..item.filename,
-			range = {
-				start = {
-					line = item.lnum - 1,
-					character = item.col
-				}
-			}
-		}
-		vim.lsp.util.jump_to_location(location)
-		vim.cmd(':normal! zz')
-	end
+	vim.lsp.util.jump_to_location(location)
+	vim.cmd(':normal! zz')
 	M.items = nil
 end
 
@@ -66,12 +52,9 @@ function M.selection_handler(index)
 end
 
 
-function M.close_selected_handler(index, line)
-	M.close_handler(index, line, true)
-end
-
 function M.close_cancelled_handler(index, line)
-	M.close_handler(index, line, false)
+	M.popup = nil
+	M.items = nil
 end
 
 function M.close_cancelled(self)
@@ -86,8 +69,28 @@ function M.select_prev(self)
 	self:select_prev(M.selection_handler)
 end
 
+function M.close_vertical_split_handler(index)
+	M.close_selected_handler(index, 'vsp')
+end
+
 function M.close_vert_split(self)
-	self:close(M.close_vertical_handler)
+	self:close(M.close_vertical_split_handler)
+end
+
+function M.close_split_handler(index)
+	M.close_selected_handler(index, 'sp')
+end
+
+function M.close_split(self)
+	self:close(M.close_split_handler)
+end
+
+function M.close_tab_handler(index)
+	M.close_selected_handler(index, 'tab')
+end
+
+function M.close_tab(self)
+	self:close(M.close_tab_handler)
 end
 
 function M.close_edit(self)
@@ -95,8 +98,12 @@ function M.close_edit(self)
 end
 
 -- for codeactions
-function M.codeacton_selection_handler(index)
+function M.codeaction_selection_handler(index)
 	M.popup = nil
+	if index == nil then 
+		M.actionBuffer = nil
+		return 
+	end
 	local action = M.actionBuffer[index]
 	if action.edit or type(action.command) == "table" then
 		if action.edit then
@@ -117,7 +124,7 @@ function M.codeaction_cancel_handler()
 end
 
 function M.codeaction_fix(self)
-	self:close(M.codeacton_selection_handler)
+	self:close(M.codeaction_selection_handler)
 end
 
 function M.codeaction_cancel(self)

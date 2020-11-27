@@ -10,18 +10,22 @@ local action = require'lsputil.actions'
 local keymaps = {
 	i = {
 		['<CR>'] = action.close_edit,
-		['<C-v>'] = action.close_vert_split,
 		['<C-n>'] = action.select_next,
 		['<C-p>'] = action.select_prev,
 		['<C-c>'] = action.close_cancelled,
+		['<C-v>'] = action.close_vert_split,
+		['<C-x>'] = action.close_split,
+		['<C-t>'] = action.close_tab,
 	},
 	n = {
 		['<CR>'] = action.close_edit,
-		['<C-v>'] = action.close_vert_split,
 		['j'] = action.select_next,
 		['k'] = action.select_prev,
 		['<Esc>'] = action.close_cancelled,
 		['q'] = action.close_cancelled,
+		['<C-v>'] = action.close_vert_split,
+		['<C-x>'] = action.close_split,
+		['<C-t>'] = action.close_tab,
 	}
 }
 
