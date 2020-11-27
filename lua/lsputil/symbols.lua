@@ -3,7 +3,6 @@
 
 local util = require'lsputil.util'
 local popfix = require'popfix'
-local resource = require'lsputil.popupResource'
 local action = require'lsputil.actions'
 
 
@@ -48,7 +47,7 @@ util.handleGlobalVariable(vim.g.lsp_utils_symbols_opts, opts)
 -- callback for lsp actions that returns symbols
 -- (for symbols see :h lsp)
 local function symbol_handler(_, _, result, _, bufnr)
-	if resource.popup then
+	if action.popup then
 		print 'Busy in some other LSP popup'
 		return
 	end
@@ -66,10 +65,8 @@ local function symbol_handler(_, _, result, _, bufnr)
 		item.text = nil
 	end
 	opts.data = data
-	local popup = popfix:new(opts)
-	if popup then
-		resource.popup = popup
-	else
+	action.popup = popfix:new(opts)
+	if not action.popup then
 		action.items = nil
 	end
 	opts.data = nil

@@ -1,7 +1,6 @@
 -- built upon popfix api(https://github.com/RishabhRD/popfix)
 -- for parameter references see popfix readme.
 
-local resource = require'lsputil.popupResource'
 local popfix = require'popfix'
 local util = require'lsputil.util'
 local action = require'lsputil.actions'
@@ -46,11 +45,12 @@ util.handleGlobalVariable(vim.g.lsp_utils_location_opts, opts)
 
 -- callback for lsp references handler
 local function references_handler(_, _, locations,_,bufnr)
-	if resource.popup then
-		print 'Busy with some LSP popup'
+	if locations == nil or vim.tbl_isempty(locations) then
+		print "No references found"
 		return
 	end
-	if locations == nil or vim.tbl_isempty(locations) then
+	if action.popup then
+		print 'Busy with some LSP popup'
 		return
 	end
 	local data = {}
@@ -66,10 +66,8 @@ local function references_handler(_, _, locations,_,bufnr)
 		action.items.text = nil
 	end
 	opts.data = data
-	local popup = popfix:new(opts)
-	if popup then
-		resource.popup = popup
-	else
+	action.popup = popfix:new(opts)
+	if not action.popup then
 		action.items = nil
 	end
 	opts.data = nil
@@ -82,7 +80,7 @@ local definition_handler = function(_,_,locations, _, bufnr)
 	end
 	if vim.tbl_islist(locations) then
 		if #locations > 1 then
-			if resource.popup then
+			if action.popup then
 				print 'Busy with some LSP popup'
 				return
 			end
@@ -99,10 +97,8 @@ local definition_handler = function(_,_,locations, _, bufnr)
 				item.text = nil
 			end
 			opts.data = data
-			local popup = popfix:new(opts)
-			if popup then
-				resource.popup = popup
-			else
+			action.popup = popfix:new(opts)
+			if action.popup then
 				action.items = nil
 			end
 			opts.data = nil

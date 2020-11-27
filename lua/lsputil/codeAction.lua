@@ -1,5 +1,4 @@
 local popfix = require'popfix'
-local resource = require'lsputil.popupResource'
 local util = require'lsputil.util'
 local actionModule = require'lsputil.actions'
 
@@ -27,7 +26,7 @@ local opts = {
 		border = true,
 	},
 	callbacks = {
-		close = actionModule.codeaction_cancelled_handler
+		close = actionModule.codeaction_cancel_handler
 	},
 	keymaps = keymaps,
 }
@@ -40,7 +39,7 @@ local code_action_handler = function(_,_,actions)
 		print("No code actions available")
 		return
 	end
-	if resource.popup then
+	if actionModule.popup then
 		print 'Busy in other LSP popup'
 		return
 	end
@@ -60,10 +59,8 @@ local code_action_handler = function(_,_,actions)
 	opts.width = width + 5
 	opts.height = opts.height or #data
 	opts.data = data
-	local popup = popfix:new(opts)
-	if popup then
-		resource.popup = popup
-	else
+	actionModule.popup = popfix:new(opts)
+	if not actionModule.popup then
 		actionModule.actionBuffer = nil
 	end
 	opts.data = nil
