@@ -8,6 +8,8 @@ local keymaps = {
 		['<C-n>'] = actionModule.codeaction_next,
 		['<C-p>'] = actionModule.codeaction_prev,
 		['<CR>'] = actionModule.codeaction_fix,
+		['<Down>'] = actionModule.select_next,
+		['<Up>'] = actionModule.select_prev,
 	},
 	n = {
 		['<CR>'] = actionModule.codeaction_fix,
@@ -15,6 +17,8 @@ local keymaps = {
 		['q'] = actionModule.codeaction_cancel,
 		['j'] = actionModule.codeaction_next,
 		['k'] = actionModule.codeaction_prev,
+		['<Down>'] = actionModule.select_next,
+		['<Up>'] = actionModule.select_prev,
 	}
 }
 

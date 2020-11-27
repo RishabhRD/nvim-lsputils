@@ -6,26 +6,15 @@ may not seem user friendly for many users. But neovim LSP client is highly
 extensible with lua. This plugin focuses on making such LSP actions highly user
 friendly.
 
-## WARNING:
-Due to this pull request (https://github.com/neovim/neovim/pull/12655), the
-way to override default lsp behavior has changed and thus it is needed to use
-`vim.lsp.handlers` instead of `vim.lsp.callbacks`.
-
-Read the setup section for required changes required from user side.
-
-### Why not hide these details in plugin itself?
-It would be comfortable if these details are hidden in plugin itself. However,
-this limits the usecase of plugin and then it can't be used in the most
-flexible as it works currently.
-(For example: conditional loading of plugin with certain lsp-servers)
-
 ## Features
 
 - Floating popup for code actions
 - Preview window for references
 - Preview window for definition, declaration, type-definition, implementation
 - Preview window for document symbol and workspace symbol
-- Fuzzy finding of symbols [optional]
+- Fuzzy finding of symbols, references, defintion and codeActions [optional]
+- <C-t>, <C-v>, <C-x> opens tabs, vertical split and horizontal split for
+  location and symbol actions
 
 ## Demo
 
@@ -47,8 +36,8 @@ flexible as it works currently.
 
 - LspSearch command to search symbol over workspace and list it in a window.
 
-**Fuzzy finding of symbols is optional for the time being. This is because
-fuzzy engine of popfix is still in developement. However, it usually it doesn't
+**Fuzzy finding feature is optional for the time being. This is because
+fuzzy engine of popfix is still in developement. However, it usually doesn't
 crash and work as expected. For using it read custom options section. 
 For the code snippet read sample theming section.**
 
@@ -79,6 +68,66 @@ Add following to init.vim lua chunk as:
 	vim.lsp.handlers['textDocument/documentSymbol'] = require'lsputil.symbols'.document_handler
 	vim.lsp.handlers['workspace/symbol'] = require'lsputil.symbols'.workspace_handler
 	EOF
+
+## Default keymaps
+
+### For codeaction
+
+**In normal mode:**
+
+	|Key   |Action                                     |
+	|:----:|-------------------------------------------|
+	|<CR>  |Applies the codeaction                     |
+	|<Esc> |Quits the menu without applying codeaction |
+	|q     |Quits the menu without applying codeaction |
+	|j     |Selects next item                          |
+	|k     |Selects previous item                      |
+	|<Down>|Selects next item                          |
+	|<Up>  |Selects previous item                      |
+
+
+**In insert mode(Fuzzy search mode):**
+
+	|Key   |Action                                     |
+	|:----:|-------------------------------------------|
+	|<CR>  |Applies the codeaction                     |
+	|<C-c> |Quits the menu without applying codeaction |
+	|<C-n> |Selects next item                          |
+	|<C-p> |Selects previous item                      |
+	|<Down>|Selects next item                          |
+	|<Up>  |Selects previous item                      |
+
+### For symbols (document symbols + workspace symbols)
+
+**In normal mode:**
+
+	|Key   |Action                                     |
+	|:----:|-------------------------------------------|
+	|<CR>  |Jump to location in same window            |
+	|<C-v> |Jump to location in a vertical split       |
+	|<C-x> |Jump to location in a horizontal split     |
+	|<C-t> |Jump to location in a new tab              |
+	|<Esc> |Quits the menu without jumping to location |
+	|q     |Quits the menu without jumping to location |
+	|j     |Selects next item                          |
+	|k     |Selects previous item                      |
+	|<Down>|Selects next item                          |
+	|<Up>  |Selects previous item                      |
+
+**In insert mode(Fuzzy search mode):**
+
+	|Key   |Action                                     |
+	|:----:|-------------------------------------------|
+	|<CR>  |Jump to location in same window            |
+	|<C-v> |Jump to location in a vertical split       |
+	|<C-x> |Jump to location in a horizontal split     |
+	|<C-t> |Jump to location in a new tab              |
+	|<C-c> |Quits the menu without jumping to location |
+	|<C-n> |Selects next item                          |
+	|<C-p> |Selects previous item                      |
+	|<Down>|Selects next item                          |
+	|<Up>  |Selects previous item                      |
+  
 
 ## Custom Options
 
