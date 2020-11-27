@@ -96,7 +96,27 @@ local function handleGlobalVariable(var, opts)
 		end
 	end
 	opts.width = var.width
-	opts.keymaps = var.keymaps or opts.keymaps
+	if var.keymaps then
+		if not opts.keymaps then
+			opts.keymaps = {}
+		end
+		if var.keymaps.i then
+			if not opts.keymaps.i then
+				opts.keymaps.i = {}
+			end
+			for k, v in pairs(var.keymaps.i) do
+				opts.keymaps.i[k] = v
+			end
+		end
+		if var.keymaps.n then
+			if not opts.keymaps.n then
+				opts.keymaps.n = {}
+			end
+			for k, v in pairs(var.keymaps.n) do
+				opts.keymaps.n[k] = v
+			end
+		end
+	end
 	if var.list then
 		if not (var.list.numbering == nil) then
 			opts.list.numbering = var.list.numbering
