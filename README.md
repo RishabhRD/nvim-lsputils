@@ -75,58 +75,60 @@ Add following to init.vim lua chunk as:
 
 **In normal mode:**
 
-	|Key   |Action                                     |
-	|:----:|-------------------------------------------|
-	|<CR>  |Applies the codeaction                     |
-	|<Esc> |Quits the menu without applying codeaction |
-	|q     |Quits the menu without applying codeaction |
-	|j     |Selects next item                          |
-	|k     |Selects previous item                      |
-	|<Down>|Selects next item                          |
-	|<Up>  |Selects previous item                      |
+|Key     |Action                                     |
+|:------:|-------------------------------------------|
+|\<CR\>  |Applies the codeaction                     |
+|\<Esc\> |Quits the menu without applying codeaction |
+|q       |Quits the menu without applying codeaction |
+|j       |Selects next item                          |
+|k       |Selects previous item                      |
+|\<Down\>|Selects next item                          |
+|\<Up\>  |Selects previous item                      |
 
 
 **In insert mode(Fuzzy search mode):**
 
-	|Key   |Action                                     |
-	|:----:|-------------------------------------------|
-	|<CR>  |Applies the codeaction                     |
-	|<C-c> |Quits the menu without applying codeaction |
-	|<C-n> |Selects next item                          |
-	|<C-p> |Selects previous item                      |
-	|<Down>|Selects next item                          |
-	|<Up>  |Selects previous item                      |
+|Key     |Action                                     |
+|:------:|-------------------------------------------|
+|\<CR\>  |Applies the codeaction                     |
+|\<C-c\> |Quits the menu without applying codeaction |
+|\<C-n\> |Selects next item                          |
+|\<C-p\> |Selects previous item                      |
+|\<Down\>|Selects next item                          |
+|\<Up\>  |Selects previous item                      |
 
-### For symbols (document symbols + workspace symbols)
+### For symbols, references, and defintions
+
+(document symbols + workspace symbols + references + defintions)
 
 **In normal mode:**
 
-	|Key   |Action                                     |
-	|:----:|-------------------------------------------|
-	|<CR>  |Jump to location in same window            |
-	|<C-v> |Jump to location in a vertical split       |
-	|<C-x> |Jump to location in a horizontal split     |
-	|<C-t> |Jump to location in a new tab              |
-	|<Esc> |Quits the menu without jumping to location |
-	|q     |Quits the menu without jumping to location |
-	|j     |Selects next item                          |
-	|k     |Selects previous item                      |
-	|<Down>|Selects next item                          |
-	|<Up>  |Selects previous item                      |
+|Key     |Action                                     |
+|:------:|-------------------------------------------|
+|\<CR\>  |Jump to location in same window            |
+|\<C-v\> |Jump to location in a vertical split       |
+|\<C-x\> |Jump to location in a horizontal split     |
+|\<C-t\> |Jump to location in a new tab              |
+|\<Esc\> |Quits the menu without jumping to location |
+|q       |Quits the menu without jumping to location |
+|j       |Selects next item                          |
+|k       |Selects previous item                      |
+|\<Down\>|Selects next item                          |
+|\<Up\>  |Selects previous item                      |
 
 **In insert mode(Fuzzy search mode):**
 
-	|Key   |Action                                     |
-	|:----:|-------------------------------------------|
-	|<CR>  |Jump to location in same window            |
-	|<C-v> |Jump to location in a vertical split       |
-	|<C-x> |Jump to location in a horizontal split     |
-	|<C-t> |Jump to location in a new tab              |
-	|<C-c> |Quits the menu without jumping to location |
-	|<C-n> |Selects next item                          |
-	|<C-p> |Selects previous item                      |
-	|<Down>|Selects next item                          |
-	|<Up>  |Selects previous item                      |
+|Key     |Action                                     |
+|:------:|-------------------------------------------|
+|\<CR\>  |Jump to location in same window            |
+|\<C-v\> |Jump to location in a vertical split       |
+|\<C-x\> |Jump to location in a horizontal split     |
+|\<C-t\> |Jump to location in a new tab              |
+|\<C-c\> |Quits the menu without jumping to location |
+|\<C-n\> |Selects next item                          |
+|\<C-p\> |Selects previous item                      |
+|\<Down\>|Selects next item                          |
+|\<Up\>  |Selects previous item                      |
   
 
 ## Custom Options
