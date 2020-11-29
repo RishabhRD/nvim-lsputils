@@ -25,6 +25,7 @@ local keymaps = {
 -- opts required for popfix
 local opts = {
 	mode = 'cursor',
+	close_on_bufleave = true,
 	list = {
 		numbering = true,
 		border = true,

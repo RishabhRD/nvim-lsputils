@@ -38,6 +38,7 @@ local opts = {
 	mode = 'split',
 	height = 12,
 	keymaps = keymaps,
+	close_on_bufleave = true,
 	callbacks = {
 		select = action.selection_handler,
 		close = action.close_cancelled_handler,
