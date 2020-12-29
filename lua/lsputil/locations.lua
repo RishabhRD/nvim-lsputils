@@ -79,6 +79,15 @@ local function references_handler(_, _, locations,_,bufnr)
     if not action.popup then
 	action.items = nil
     end
+    if action.popup.list then
+	util.setFiletype(action.popup.list.buffer, 'lsputil_locations_list')
+    end
+    if action.popup.preview then
+	util.setFiletype(action.popup.preview.buffer, 'lsputil_locations_preview')
+    end
+    if action.popup.prompt then
+	util.setFiletype(action.popup.prompt.buffer, 'lsputil_locations_prompt')
+    end
     opts.data = nil
 end
 
@@ -109,6 +118,15 @@ local definition_handler = function(_,_,locations, _, bufnr)
 	    action.popup = popfix:new(opts)
 	    if not action.popup then
 		action.items = nil
+	    end
+	    if action.popup.list then
+		util.setFiletype(action.popup.list.buffer, 'lsputil_locations_list')
+	    end
+	    if action.popup.preview then
+		util.setFiletype(action.popup.preview.buffer, 'lsputil_locations_preview')
+	    end
+	    if action.popup.prompt then
+		util.setFiletype(action.popup.prompt.buffer, 'lsputil_locations_prompt')
 	    end
 	    opts.data = nil
 	else

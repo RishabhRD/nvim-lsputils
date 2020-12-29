@@ -151,10 +151,15 @@ local function handleGlobalVariable(var, opts)
     end
 end
 
+local function setFiletype(buffer, type)
+    vim.api.nvim_buf_set_option(buffer, 'filetype', type)
+end
+
 
 return{
     get_data_from_file = get_data_from_file,
     get_relative_path = get_relative_path,
     handleGlobalVariable = handleGlobalVariable,
+    setFiletype = setFiletype
 }
 

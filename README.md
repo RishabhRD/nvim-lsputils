@@ -130,6 +130,29 @@ Add following to init.vim lua chunk as:
 |\<Down\>|Selects next item                          |
 |\<Up\>  |Selects previous item                      |
   
+## Custom Filetypes
+
+nvim-lsputils export some custom filetypes for their created buffer.
+This enables users to do customization for nvim-lsputil buffers.
+
+Custom filetypes are:
+
+- For codeaction:
+
+    - lsputil_codeaction_list (Represents codeaction list)
+    - lsputil_codeaction_prompt (Represents codeaction prompt) (If enabled)
+
+- For symbols (workspace and document symbols):
+
+    - lsputil_symbols_list (Represents symbols list)
+    - lsputil_symbols_preview (Represents symbols preview)
+    - lsputil_symbols_prompt (Represents symbols prompt)
+
+- For locations (definition, declaration, references, implementation):
+
+    - lsputil_locations_list (Represents locations list)
+    - lsputil_locations_preview (Represents locations preview)
+    - lsputil_locations_prompt (Represents locations prompt)
 
 ## Custom Options
 

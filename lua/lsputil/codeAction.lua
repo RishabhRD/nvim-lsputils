@@ -37,7 +37,6 @@ local opts = {
 }
 util.handleGlobalVariable(vim.g.lsp_utils_codeaction_opts, opts)
 
-
 -- codeAction event callback handler
 local code_action_handler = function(_,_,actions)
     if actions == nil or vim.tbl_isempty(actions) then
@@ -67,6 +66,10 @@ local code_action_handler = function(_,_,actions)
     actionModule.popup = popfix:new(opts)
     if not actionModule.popup then
 	actionModule.actionBuffer = nil
+    end
+    util.setFiletype(actionModule.popup.list.buffer, 'lsputil_codeaction_list')
+    if actionModule.popup.prompt then
+	util.setFiletype(actionModule.popup.prompt.buffer, 'lsputil_codeaction_prompt')
     end
     opts.data = nil
 end
