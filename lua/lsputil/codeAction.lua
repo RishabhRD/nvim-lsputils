@@ -3,24 +3,26 @@ local util = require'lsputil.util'
 local actionModule = require'lsputil.actions'
 
 -- default keymaps provided by nvim-lsputils
-local keymaps = {
-    i = {
-	['<C-n>'] = actionModule.codeaction_next,
-	['<C-p>'] = actionModule.codeaction_prev,
-	['<CR>'] = actionModule.codeaction_fix,
-	['<Down>'] = actionModule.select_next,
-	['<Up>'] = actionModule.select_prev,
-    },
-    n = {
-	['<CR>'] = actionModule.codeaction_fix,
-	['<Esc>'] = actionModule.codeaction_cancel,
-	['q'] = actionModule.codeaction_cancel,
-	['j'] = actionModule.codeaction_next,
-	['k'] = actionModule.codeaction_prev,
-	['<Down>'] = actionModule.select_next,
-	['<Up>'] = actionModule.select_prev,
+local function createKeymaps()
+    return {
+	i = {
+	    ['<C-n>'] = actionModule.codeaction_next,
+	    ['<C-p>'] = actionModule.codeaction_prev,
+	    ['<CR>'] = actionModule.codeaction_fix,
+	    ['<Down>'] = actionModule.select_next,
+	    ['<Up>'] = actionModule.select_prev,
+	},
+	n = {
+	    ['<CR>'] = actionModule.codeaction_fix,
+	    ['<Esc>'] = actionModule.codeaction_cancel,
+	    ['q'] = actionModule.codeaction_cancel,
+	    ['j'] = actionModule.codeaction_next,
+	    ['k'] = actionModule.codeaction_prev,
+	    ['<Down>'] = actionModule.select_next,
+	    ['<Up>'] = actionModule.select_prev,
+	}
     }
-}
+end
 
 -- opts required for popfix
 local opts = {
@@ -33,7 +35,6 @@ local opts = {
     callbacks = {
 	close = actionModule.codeaction_cancel_handler
     },
-    keymaps = keymaps,
 }
 util.handleGlobalVariable(vim.g.lsp_utils_codeaction_opts, opts)
 
@@ -60,6 +61,13 @@ local code_action_handler = function(_,_,actions)
 	    width = #str
 	end
     end
+    local keymaps = createKeymaps()
+    if not opts.prompt then
+	for k,_ in ipairs(data) do
+	    keymaps.n[tostring(k)] = k..'G<CR>'
+	end
+    end
+    opts.keymaps = keymaps
     opts.width = width + 5
     opts.height = opts.height or #data
     opts.data = data
