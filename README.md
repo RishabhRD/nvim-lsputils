@@ -346,7 +346,7 @@ end
 ```
 
 
-One simple example is integration with [https://github.com/mfussenegger/nvim-jdtls](nvim-jdtls).
+One simple example is integration with [nvim-jdtls](https://github.com/mfussenegger/nvim-jdtls).
 
 ```lua
 local jdtls_ui = require'jdtls.ui'
