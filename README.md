@@ -282,38 +282,71 @@ These options helps to get better theme that suits your need.
 
 ### Sample themeing with lua
 
-	local border_chars = {
-		TOP_LEFT = '┌',
-		TOP_RIGHT = '┐',
-		MID_HORIZONTAL = '─',
-		MID_VERTICAL = '│',
-		BOTTOM_LEFT = '└',
-		BOTTOM_RIGHT = '┘',
-	}
-	vim.g.lsp_utils_location_opts = {
-		height = 24,
-		mode = 'editor',
-		preview = {
-			title = 'Location Preview',
-			border = true,
-			border_chars = border_chars
-		},
-		keymaps = {
-			n = {
-				['<C-n>'] = 'j',
-				['<C-p>'] = 'k',
-			}
+```
+local border_chars = {
+	TOP_LEFT = '┌',
+	TOP_RIGHT = '┐',
+	MID_HORIZONTAL = '─',
+	MID_VERTICAL = '│',
+	BOTTOM_LEFT = '└',
+	BOTTOM_RIGHT = '┘',
+}
+vim.g.lsp_utils_location_opts = {
+	height = 24,
+	mode = 'editor',
+	preview = {
+		title = 'Location Preview',
+		border = true,
+		border_chars = border_chars
+	},
+	keymaps = {
+		n = {
+			['<C-n>'] = 'j',
+			['<C-p>'] = 'k',
 		}
 	}
-	vim.g.lsp_utils_symbols_opts = {
-		height = 24,
-		mode = 'editor',
-		preview = {
-			title = 'Symbols Preview',
-			border = true,
-			border_chars = border_chars
-		},
-		prompt = {},
-	}
+}
+vim.g.lsp_utils_symbols_opts = {
+	height = 24,
+	mode = 'editor',
+	preview = {
+		title = 'Symbols Preview',
+		border = true,
+		border_chars = border_chars
+	},
+	prompt = {},
+}
+```
 
 **Symbols would have fuzzy find features with these configuration**
+
+## Advanced configuration
+
+nvim-lsputils provides some extension in handler function definition so that
+it can be integrated with some other lsp plugins easily.
+
+Currently codeaction supports this extended defintion. Codeaction handler signature
+is something like:
+
+```lua
+code_action_handler(_, _, actions, _, _, _, customSelectionHandler)
+```
+
+``customSelectionHandler`` is not defined by standard docs. However, nvim-lsputils
+provide it for easy extension and use with other plugins. This is a function
+that expects a selection action as paramter. If provided to the function,
+the function executes this customSelectionHandler with selected action instead
+of applying codeaction directly.
+
+One simple example is integration with [https://github.com/mfussenegger/nvim-jdtls](nvim-jdtls).
+
+```lua
+local jdtls_ui = require'jdtls.ui'
+function jdtls_ui.pick_one_async(items, _, _, cb)
+  require'lsputil.codeAction'.code_action_handler(nil, nil, items, nil, nil, nil, cb)
+end
+```
+
+This code snippet modifies the nvim-jdtls UI to make use of nvim-lsputils UI.
+With this code snippet, nvim-lsputils would provide the UI but the action would
+be decided by the functin parameter cb.

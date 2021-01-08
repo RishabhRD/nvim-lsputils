@@ -39,6 +39,7 @@ local opts = {
 util.handleGlobalVariable(vim.g.lsp_utils_codeaction_opts, opts)
 
 -- codeAction event callback handler
+-- use customSelectionHandler for defining custom way to handle selection
 local code_action_handler = function(_,_,actions, _, _, _, customSelectionHandler)
     if actions == nil or vim.tbl_isempty(actions) then
 	print("No code actions available")
