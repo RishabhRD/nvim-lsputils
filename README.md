@@ -333,10 +333,18 @@ code_action_handler(_, _, actions, _, _, _, customSelectionHandler)
 ```
 
 ``customSelectionHandler`` is not defined by standard docs. However, nvim-lsputils
-provide it for easy extension and use with other plugins. This is a function
-that expects a selection action as paramter. If provided to the function,
+provide it for easy extension and use with other plugins. ``customSelectionHandler`` is expected to be a function
+that accepts the selection action(from all codeactions) as parameter. If provided to the function,
 the function executes this customSelectionHandler with selected action instead
 of applying codeaction directly.
+
+A simple ``customSelectionHandler`` can look like:
+```lua
+local function customSelectionHandler(selectedAction)
+  print("Action selected: ", selectedAction)
+end
+```
+
 
 One simple example is integration with [https://github.com/mfussenegger/nvim-jdtls](nvim-jdtls).
 
