@@ -118,6 +118,22 @@ function M.codeaction_selection_handler(index)
     M.actionBuffer = nil
 end
 
+function M.customSelectionAction(customFunction)
+  return function(popup)
+    popup:close(function(index)
+      M.popup = nil
+      if index == nil then
+        M.actionBuffer = nil
+        return
+      end
+      local action = M.actionBuffer[index]
+      customFunction(action)
+      M.actionBuffer = nil
+    end)
+  end
+end
+
+
 function M.codeaction_cancel_handler()
     M.popup = nil
     M.actionBuffer = nil

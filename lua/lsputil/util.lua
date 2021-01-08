@@ -155,11 +155,20 @@ local function setFiletype(buffer, type)
     vim.api.nvim_buf_set_option(buffer, 'filetype', type)
 end
 
+local function setCustomActionMappings(keymaps, customSelectionHandler)
+  if customSelectionHandler then
+    local closeWrapperFunction = require'lsputil.actions'.customSelectionAction(customSelectionHandler)
+    keymaps.i['<CR>'] = closeWrapperFunction
+    keymaps.n['<CR>'] = closeWrapperFunction
+  end
+end
+
 
 return{
-    get_data_from_file = get_data_from_file,
-    get_relative_path = get_relative_path,
-    handleGlobalVariable = handleGlobalVariable,
-    setFiletype = setFiletype
+  get_data_from_file = get_data_from_file,
+  get_relative_path = get_relative_path,
+  handleGlobalVariable = handleGlobalVariable,
+  setFiletype = setFiletype,
+  setCustomActionMappings = setCustomActionMappings
 }
 

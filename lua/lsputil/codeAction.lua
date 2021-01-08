@@ -39,7 +39,7 @@ local opts = {
 util.handleGlobalVariable(vim.g.lsp_utils_codeaction_opts, opts)
 
 -- codeAction event callback handler
-local code_action_handler = function(_,_,actions)
+local code_action_handler = function(_,_,actions, _, _, _, customSelectionHandler)
     if actions == nil or vim.tbl_isempty(actions) then
 	print("No code actions available")
 	return
@@ -67,6 +67,7 @@ local code_action_handler = function(_,_,actions)
 	    keymaps.n[tostring(k)] = k..'G<CR>'
 	end
     end
+    util.setCustomActionMappings(keymaps, customSelectionHandler)
     opts.keymaps = keymaps
     opts.width = width + 5
     opts.height = opts.height or #data
@@ -84,5 +85,4 @@ end
 
 return{
     code_action_handler = code_action_handler,
-    keymaps = keymaps,
 }
