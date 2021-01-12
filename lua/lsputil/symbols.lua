@@ -34,25 +34,27 @@ local keymaps = {
 }
 
 -- opts for popfix
-local opts = {
+local function createOpts()
+  local opts = {
     mode = 'split',
     height = 12,
     keymaps = keymaps,
     close_on_bufleave = true,
     callbacks = {
-	select = action.selection_handler,
-	close = action.close_cancelled_handler,
+      select = action.selection_handler,
+      close = action.close_cancelled_handler,
     },
     list = {
-	numbering = true
+      numbering = true
     },
     preview = {
-	type = 'terminal',
-	border = true,
+      type = 'terminal',
+      border = true,
     }
-}
-util.handleGlobalVariable(vim.g.lsp_utils_symbols_opts, opts)
-
+  }
+  util.handleGlobalVariable(vim.g.lsp_utils_symbols_opts, opts)
+  return opts
+end
 -- callback for lsp actions that returns symbols
 -- (for symbols see :h lsp)
 local function symbol_handler(_, _, result, _, bufnr)
@@ -73,6 +75,7 @@ local function symbol_handler(_, _, result, _, bufnr)
 	end
 	item.text = nil
     end
+    local opts = createOpts()
     opts.data = data
     action.popup = popfix:new(opts)
     if not action.popup then

@@ -25,18 +25,21 @@ local function createKeymaps()
 end
 
 -- opts required for popfix
-local opts = {
+local function createOpts()
+  local opts = {
     mode = 'cursor',
     close_on_bufleave = true,
     list = {
-	numbering = true,
-	border = true,
+      numbering = true,
+      border = true,
     },
     callbacks = {
-	close = actionModule.codeaction_cancel_handler
+      close = actionModule.codeaction_cancel_handler
     },
-}
-util.handleGlobalVariable(vim.g.lsp_utils_codeaction_opts, opts)
+  }
+  util.handleGlobalVariable(vim.g.lsp_utils_codeaction_opts, opts)
+  return opts
+end
 
 -- codeAction event callback handler
 -- use customSelectionHandler for defining custom way to handle selection
@@ -63,6 +66,7 @@ local code_action_handler = function(_,_,actions, _, _, _, customSelectionHandle
 	end
     end
     local keymaps = createKeymaps()
+    local opts = createOpts()
     if not opts.prompt then
 	for k,_ in ipairs(data) do
 	    keymaps.n[tostring(k)] = k..'G<CR>'
@@ -71,7 +75,21 @@ local code_action_handler = function(_,_,actions, _, _, _, customSelectionHandle
     util.setCustomActionMappings(keymaps, customSelectionHandler)
     opts.keymaps = keymaps
     opts.width = width + 5
-    opts.height = opts.height or #data
+    if opts.height == nil then
+      opts.height = #data
+      if opts.height > vim.api.nvim_win_get_height(0) - 4 then
+        opts.height = vim.api.nvim_win_get_height(0)
+        local currentLine = vim.fn.line('.')
+        local firstVisibleLine = vim.fn.line('w0')
+        local heightDiff = currentLine - firstVisibleLine
+        local height = vim.api.nvim_get_current_win(0)
+        opts.height = height - heightDiff - 2
+      end
+    end
+    if opts.width >= vim.api.nvim_win_get_width(0) - 6 then
+      opts.width = vim.api.nvim_win_get_width(0) - 6
+    end
+    print(opts.height, opts.width)
     opts.data = data
     actionModule.popup = popfix:new(opts)
     if not actionModule.popup then

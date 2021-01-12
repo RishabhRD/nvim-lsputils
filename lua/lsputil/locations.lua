@@ -33,25 +33,27 @@ local keymaps = {
 }
 
 -- opts for popfix
-local opts = {
+local function createOpts()
+  local opts = {
     mode = 'split',
     height = 12,
     keymaps = keymaps,
     close_on_bufleave = true,
     callbacks = {
-	select = action.selection_handler,
-	close = action.close_cancelled_handler,
+      select = action.selection_handler,
+      close = action.close_cancelled_handler,
     },
     list = {
-	numbering = true
+      numbering = true
     },
     preview = {
-	type = 'terminal',
-	border = true,
+      type = 'terminal',
+      border = true,
     }
-}
-util.handleGlobalVariable(vim.g.lsp_utils_location_opts, opts)
-
+  }
+  util.handleGlobalVariable(vim.g.lsp_utils_location_opts, opts)
+  return opts
+end
 -- callback for lsp references handler
 local function references_handler(_, _, locations,_,bufnr)
     if locations == nil or vim.tbl_isempty(locations) then
@@ -74,6 +76,7 @@ local function references_handler(_, _, locations,_,bufnr)
 	end
 	action.items.text = nil
     end
+    local opts = createOpts();
     opts.data = data
     action.popup = popfix:new(opts)
     if not action.popup then
@@ -114,6 +117,7 @@ local definition_handler = function(_,_,locations, _, bufnr)
 		end
 		item.text = nil
 	    end
+            local opts = createOpts();
 	    opts.data = data
 	    action.popup = popfix:new(opts)
 	    if not action.popup then
