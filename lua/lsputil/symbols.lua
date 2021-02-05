@@ -73,6 +73,7 @@ local function symbol_handler(_, _, result, _, bufnr)
 	    local add = util.get_relative_path(cwd, item.filename)
 	    data[i] = data[i]..' - '..add
 	end
+        data[i] = data[i]:gsub("\n", "")
 	item.text = nil
     end
     local opts = createOpts()

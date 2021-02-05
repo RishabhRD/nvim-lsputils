@@ -58,6 +58,7 @@ local code_action_handler = function(_,_,actions, _, _, _, customSelectionHandle
 	local title = action.title:gsub('\r\n', '\\r\\n')
 	title = title:gsub('\n','\\n')
 	data[i] = title
+        data[i] = data[i]:gsub("\n", "")
     end
     local width = 0
     for _, str in ipairs(data) do

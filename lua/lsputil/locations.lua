@@ -74,6 +74,7 @@ local function references_handler(_, _, locations,_,bufnr)
 	    local add = util.get_relative_path(cwd, item.filename)
 	    data[i] = data[i]..' - '..add
 	end
+        data[i] = data[i]:gsub("\n", "")
 	action.items.text = nil
     end
     local opts = createOpts();
@@ -115,6 +116,7 @@ local definition_handler = function(_,_,locations, _, bufnr)
 		    local add = util.get_relative_path(cwd, item.filename)
 		    data[i] = data[i]..' - '..add
 		end
+                data[i] = data[i]:gsub("\n", "")
 		item.text = nil
 	    end
             local opts = createOpts();
